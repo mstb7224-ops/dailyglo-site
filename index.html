@@ -1,15 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DailyGlo Lottery Agency</title>
-<style>
-  html, body { margin:0; padding:0; height:100%; width:100%; overflow:hidden; }
-  iframe { border:none; width:100%; height:100vh; display:block; }
-</style>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<iframe src="https://script.google.com/macros/s/AKfycbxhU0EKxzvns98fnYRxTLvhxb9IiUfW3D9jtmffluguBrWYk9yWbEMNKx2naK58GlAt/exec"></iframe>
+
+<div class="animated-bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="dot-grid"></div>
+</div>
+
+<nav class="site-navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">&#9733;</span>
+      DailyGlo
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="pages/faq.html">FAQ</a>
+      <a href="pages/contact.html">Contact</a>
+    </div>
+    <div class="nav-auth">
+      <a href="pages/login.html" class="btn-nav btn-nav-outline">Login</a>
+      <a href="pages/register.html" class="btn-nav btn-nav-solid">Register</a>
+    </div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html">Home</a>
+  <a href="pages/faq.html">FAQ</a>
+  <a href="pages/contact.html">Contact</a>
+  <div class="mobile-auth">
+    <a href="pages/login.html" class="btn btn-outline btn-sm">Login</a>
+    <a href="pages/register.html" class="btn btn-gold btn-sm">Register</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      Trusted by 10,000+ Members Worldwide
+    </div>
+    <h1>
+      Your Gateway to<br>
+      <span class="accent">Lottery Success</span>
+    </h1>
+    <p>Join DailyGlo for verified membership, secure payment processing, and reliable support.</p>
+    <div class="hero-buttons">
+      <a href="pages/register.html" class="btn btn-gold">Get Started</a>
+      <a href="pages/login.html" class="btn btn-outline">Member Login</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-num">10K+</span>
+        <span class="stat-label">Active Members</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">99%</span>
+        <span class="stat-label">Satisfaction</span>
+      </div>
+      <div class="hero-stat">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">Support</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="mouse"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header animate-in">
+    <span class="section-label">Features</span>
+    <h2 class="section-title">Why Choose DailyGlo?</h2>
+    <p class="section-subtitle">We provide a secure and transparent platform for lottery enthusiasts worldwide.</p>
+  </div>
+  <div class="card-grid">
+    <div class="info-card animate-in">
+      <div class="icon">&#128737;</div>
+      <h3>100% Trusted</h3>
+      <p>Verified by thousands of members worldwide.</p>
+    </div>
+    <div class="info-card animate-in">
+      <div class="icon">&#9989;</div>
+      <h3>Secure Verification</h3>
+      <p>Your Iqama and documents are safely stored.</p>
+    </div>
+    <div class="info-card animate-in">
+      <div class="icon">&#128272;</div>
+      <h3>Secure Payment</h3>
+      <p>Multiple payment options with admin approval.</p>
+    </div>
+    <div class="info-card animate-in">
+      <div class="icon">&#127911;</div>
+      <h3>24/7 Support</h3>
+      <p>Our team is always here to help you.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header animate-in">
+    <span class="section-label">Process</span>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-subtitle">Four simple steps to get started with DailyGlo.</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step-item animate-in">
+      <div class="step-circle">1</div>
+      <h4>Register</h4>
+      <p>Fill in your details and upload your Iqama.</p>
+    </div>
+    <div class="step-item animate-in">
+      <div class="step-circle">2</div>
+      <h4>Get Member ID</h4>
+      <p>Receive your unique Member ID instantly by email.</p>
+    </div>
+    <div class="step-item animate-in">
+      <div class="step-circle">3</div>
+      <h4>Submit Payment</h4>
+      <p>Log in and upload your payment screenshot.</p>
+    </div>
+    <div class="step-item animate-in">
+      <div class="step-circle">4</div>
+      <h4>Get Approved</h4>
+      <p>Our team verifies and approves within 24 hours.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-card animate-in">
+    <h2>Ready to Join DailyGlo?</h2>
+    <p>Register today and become part of our growing community.</p>
+    <a href="pages/register.html" class="btn btn-gold">Register Now</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo">
+          <span class="logo-icon">&#9733;</span>
+          DailyGlo
+        </a>
+        <p>Your trusted lottery agency for secure membership.</p>
+      </div>
+      <div class="footer-links-group">
+        <div>
+          <h4>Quick Links</h4>
+          <a href="index.html">Home</a>
+          <a href="pages/faq.html">FAQ</a>
+          <a href="pages/contact.html">Contact</a>
+        </div>
+        <div>
+          <h4>Account</h4>
+          <a href="pages/register.html">Register</a>
+          <a href="pages/login.html">Login</a>
+          <a href="pages/payment.html">Payment</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="pages/privacy.html">Privacy</a>
+          <a href="pages/terms.html">Terms</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 DailyGlo Lottery Agency. All Rights Reserved.</p>
+      <div class="footer-legal">
+        <a href="pages/privacy.html">Privacy</a>
+        <a href="pages/terms.html">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
 </body>
 </html>
