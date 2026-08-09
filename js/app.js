@@ -211,27 +211,37 @@
   function bindCountdown() {
     var countdown = document.querySelector('[data-countdown]');
     if (!countdown) return;
-    var remaining = Number(countdown.getAttribute('data-countdown')) || 7200;
+
+    // 16 Aug 2026, 12:00:00 GMT+3 = 2026-08-16T09:00:00.000Z.
+    var targetUtc = new Date('2026-08-16T09:00:00.000Z').getTime();
     var days = countdown.querySelector('[data-countdown-days]');
     var hours = countdown.querySelector('[data-countdown-hours]');
     var minutes = countdown.querySelector('[data-countdown-minutes]');
     var seconds = countdown.querySelector('[data-countdown-seconds]');
-    function pad(value) { return String(value).padStart(2, '0'); }
+    var localTime = document.querySelector('[data-local-draw-time]');
+    var timezone = document.querySelector('[data-local-timezone]');
+    function pad(value) { return String(Math.max(0, value)).padStart(2, '0'); }
     function render() {
-      var d = Math.floor(remaining / 86400);
-      var h = Math.floor((remaining % 86400) / 3600);
-      var m = Math.floor((remaining % 3600) / 60);
-      var s = remaining % 60;
+      var remaining = Math.max(0, targetUtc - Date.now());
+      var totalSeconds = Math.floor(remaining / 1000);
+      var d = Math.floor(totalSeconds / 86400);
+      var h = Math.floor((totalSeconds % 86400) / 3600);
+      var m = Math.floor((totalSeconds % 3600) / 60);
+      var s = totalSeconds % 60;
       if (days) days.textContent = pad(d);
       if (hours) hours.textContent = pad(h);
       if (minutes) minutes.textContent = pad(m);
       if (seconds) seconds.textContent = pad(s);
+      if (localTime) {
+        localTime.textContent = new Intl.DateTimeFormat(undefined, {
+          dateStyle: 'medium', timeStyle: 'short'
+        }).format(new Date(targetUtc));
+      }
+      if (timezone) timezone.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local time';
+      countdown.classList.toggle('countdown-ended', totalSeconds === 0);
     }
     render();
-    window.setInterval(function () {
-      remaining = remaining > 0 ? remaining - 1 : 7200;
-      render();
-    }, 1000);
+    window.setInterval(render, 1000);
   }
 
   function bindScrollEffects() {
