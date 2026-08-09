@@ -212,14 +212,17 @@
     var countdown = document.querySelector('[data-countdown]');
     if (!countdown) return;
     var remaining = Number(countdown.getAttribute('data-countdown')) || 7200;
+    var days = countdown.querySelector('[data-countdown-days]');
     var hours = countdown.querySelector('[data-countdown-hours]');
     var minutes = countdown.querySelector('[data-countdown-minutes]');
     var seconds = countdown.querySelector('[data-countdown-seconds]');
     function pad(value) { return String(value).padStart(2, '0'); }
     function render() {
-      var h = Math.floor(remaining / 3600);
+      var d = Math.floor(remaining / 86400);
+      var h = Math.floor((remaining % 86400) / 3600);
       var m = Math.floor((remaining % 3600) / 60);
       var s = remaining % 60;
+      if (days) days.textContent = pad(d);
       if (hours) hours.textContent = pad(h);
       if (minutes) minutes.textContent = pad(m);
       if (seconds) seconds.textContent = pad(s);

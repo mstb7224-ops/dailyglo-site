@@ -109,7 +109,7 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
 .form-footer{text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);color:var(--text-secondary);font-size:.9rem}
 .form-footer a{color:var(--gold);font-weight:600}
 .payment-methods{display:grid;gap:12px;margin-bottom:28px}
-.payment-method{display:flex;align-items:center;gap:16px;padding:18px 20px;background:var(--dark-surface);border:1.5
+.payment-method{display:flex;align-items:center;gap:16px;padding:18px 20px;background:var(--dark-surface);border:1.5px solid rgba(212,168,67,.15);border-radius:12px;cursor:pointer;transition:var(--transition)}
 
 /* Frontend interaction states */
 .mobile-menu{display:none}
@@ -162,3 +162,35 @@ select.form-control{cursor:pointer;appearance:none;background-image:url("data:im
   .hero-trust-row span{font-size:.7rem;padding:7px 9px}
   .trust-strip{gap:10px;justify-content:flex-start}
 }
+
+/* Reference concept: neon lottery landing page */
+:root{--neon:#28d7ff;--neon-deep:#0877d6;--navy:#06142b;--gold-bright:#ffd45b}
+.reference-home{background:linear-gradient(145deg,#020714 0%,#06182f 54%,#020814 100%);color:#eef8ff}
+.reference-home .animated-bg .orb{background:var(--neon);opacity:.12}
+.reference-home .animated-bg .orb-2{background:#3158ff;opacity:.12}
+.reference-home .site-navbar{background:rgba(2,8,20,.82);border-bottom-color:rgba(40,215,255,.16)}
+.reference-home .nav-logo{color:var(--neon)}
+.reference-home .logo-icon{background:linear-gradient(145deg,var(--neon),#145bdf);color:#031326;border-radius:8px;font-size:.78rem;font-weight:800}
+.reference-home .nav-links a:hover,.reference-home .nav-links a.active{color:var(--neon)}
+.reference-home .btn-nav-solid{background:linear-gradient(135deg,var(--neon),#1787e9);color:#021126}
+.reference-home .hero-badge{background:rgba(40,215,255,.08);border-color:rgba(40,215,255,.28);color:var(--neon)}
+.reference-hero{position:relative;z-index:1;min-height:720px;max-width:1280px;margin:0 auto;padding:154px 36px 60px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:42px}
+.reference-hero-content h1{font-family:'Playfair Display',serif;font-size:clamp(3.2rem,7vw,6.5rem);line-height:.95;letter-spacing:.02em;margin:24px 0;color:#f7fbff}
+.neon-text{color:var(--neon);text-shadow:0 0 12px rgba(40,215,255,.42),0 0 34px rgba(40,215,255,.2)}
+.reference-hero-content>p{max-width:560px;color:#9bb4ce;font-size:1.05rem;line-height:1.75;margin-bottom:30px}
+.btn-neon{background:linear-gradient(135deg,#36e7ff,#157bdd);color:#021126;box-shadow:0 8px 28px rgba(40,215,255,.22)}
+.btn-neon:hover{background:linear-gradient(135deg,#8af2ff,#39a9ff);box-shadow:0 12px 40px rgba(40,215,255,.34)}
+.btn-whatsapp{background:rgba(22,190,112,.12);border:1px solid rgba(53,221,143,.45);color:#58e9a1}
+.reference-home .hero-trust-row{justify-content:flex-start;margin-left:0;color:#91aac5}
+.reference-home .hero-trust-row span{border-color:rgba(40,215,255,.15);background:rgba(7,28,53,.68)}
+.reference-home .hero-trust-row strong{color:var(--neon)}
+.draw-panel{position:relative;overflow:hidden;padding:34px 32px 26px;text-align:center;border:1px solid rgba(40,215,255,.4);border-radius:28px;background:radial-gradient(circle at 50% 42%,rgba(19,103,193,.34),transparent 48%),linear-gradient(155deg,rgba(8,37,73,.95),rgba(2,12,30,.95));box-shadow:0 0 0 1px rgba(40,215,255,.08),0 22px 70px rgba(0,0,0,.35),inset 0 0 48px rgba(40,215,255,.06)}
+.draw-panel::before{content:'';position:absolute;inset:12px;border:1px solid rgba(40,215,255,.12);border-radius:21px;pointer-events:none}
+.draw-panel-top{position:relative;color:var(--neon);font-weight:800;letter-spacing:.18em;font-size:.72rem}.draw-panel-top em{color:#ff5d78;font-style:normal;margin-left:8px;font-size:.58rem}.live-dot{display:inline-block;width:8px;height:8px;background:#ff526e;border-radius:50%;margin-right:7px;box-shadow:0 0 10px #ff526e;animation:pulse 1.5s infinite}
+.draw-date{position:relative;margin-top:18px;font-family:'Playfair Display',serif;font-size:1.55rem;color:#fff}.draw-time{position:relative;margin-top:4px;color:#8da7c5;font-size:.76rem}
+.neon-countdown{position:relative;justify-content:center;gap:10px;margin:28px 0 16px}.neon-countdown span{min-width:72px;padding:13px 8px;border:1px solid rgba(40,215,255,.3);border-radius:9px;background:rgba(2,11,29,.76);box-shadow:inset 0 0 18px rgba(40,215,255,.06)}.neon-countdown strong{font-family:Inter,sans-serif;font-size:2rem;color:#fff;text-shadow:0 0 12px rgba(40,215,255,.65)}.neon-countdown small{color:var(--neon);font-size:.58rem}.draw-status{position:relative;color:#7691ae;font-size:.68rem}.jackpot-chip{position:relative;display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:10px 16px;border:1px solid rgba(255,212,91,.42);border-radius:999px;background:rgba(255,190,45,.1);color:var(--gold-bright);font-size:.76rem}.jackpot-chip strong{color:#fff}.number-balls{position:relative;display:flex;justify-content:center;gap:12px;margin-top:24px}.number-balls i{display:flex;align-items:center;justify-content:center;width:39px;height:39px;border-radius:50%;font-style:normal;font-weight:800;color:#062041;background:linear-gradient(145deg,#fff,#47caff);box-shadow:0 4px 14px rgba(40,215,255,.32)}.number-balls i:nth-child(even){background:linear-gradient(145deg,#fff2a8,#f1ad2f)}
+.stats-bar{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;max-width:1160px;margin:-10px auto 0;padding:23px 28px;border:1px solid rgba(40,215,255,.16);border-radius:18px;background:rgba(4,24,49,.84);box-shadow:0 14px 45px rgba(0,0,0,.2)}.stats-bar div{text-align:center;border-right:1px solid rgba(40,215,255,.13)}.stats-bar div:last-child{border-right:0}.stats-bar strong{display:block;color:#fff;font-size:1.22rem}.stats-bar span{display:block;color:#7591af;font-size:.72rem;margin-top:4px}
+.reference-section{max-width:1160px}.reference-home .section-label{color:var(--neon)}.reference-home .section-title{color:#f5fbff}.reference-home .section-subtitle{color:#8da6c0}.reference-card-grid{gap:18px}.reference-card{padding:30px 22px;background:linear-gradient(160deg,rgba(11,46,83,.82),rgba(4,17,39,.84));border-color:rgba(40,215,255,.16);box-shadow:inset 0 0 24px rgba(40,215,255,.03)}.reference-card::before{background:linear-gradient(90deg,var(--neon),#5868ff)}.reference-card:hover{border-color:rgba(40,215,255,.5);box-shadow:0 12px 32px rgba(40,215,255,.12)}.reference-card .neon-icon{color:var(--neon);background:rgba(40,215,255,.08);border-color:rgba(40,215,255,.2)}.reference-card h3{color:#f2faff}.reference-card p{color:#8ba6c0}
+.reference-steps .step-circle{border-color:var(--neon);color:var(--neon);background:#071c39;box-shadow:0 0 20px rgba(40,215,255,.12)}.reference-steps .step-item:hover .step-circle{background:var(--neon);color:#031326}.process-section .steps-grid::before{background:linear-gradient(90deg,transparent,rgba(40,215,255,.5),transparent)}.reference-cta{padding-top:45px}.reference-cta .cta-card{background:linear-gradient(145deg,rgba(8,47,86,.92),rgba(3,17,37,.94));border-color:rgba(40,215,255,.22)}.reference-cta .cta-card p{color:#9bb6ce}.reference-home .site-footer{background:#020a18;border-top-color:rgba(40,215,255,.13)}.reference-home .footer-brand p,.reference-home .footer-bottom{color:#6f89a5}
+@media(max-width:900px){.reference-hero{grid-template-columns:1fr;padding-top:130px}.reference-hero-content{text-align:center}.reference-hero-content>p{margin-left:auto;margin-right:auto}.reference-home .hero-trust-row{justify-content:center;margin-left:auto}.draw-panel{max-width:620px;margin:0 auto;width:100%}.stats-bar{margin:15px 24px 0}}
+@media(max-width:600px){.reference-hero{padding:120px 18px 42px;min-height:auto}.reference-hero-content h1{font-size:clamp(2.7rem,15vw,4.3rem)}.reference-hero-content>p{font-size:.92rem}.reference-home .hero-buttons{gap:10px}.reference-home .hero-buttons .btn{padding:13px 17px;font-size:.85rem}.draw-panel{padding:28px 16px 22px}.neon-countdown{gap:5px}.neon-countdown span{min-width:55px;padding:10px 4px}.neon-countdown strong{font-size:1.45rem}.stats-bar{grid-template-columns:repeat(2,1fr);padding:18px 10px;gap:15px}.stats-bar div:nth-child(2){border-right:0}.stats-bar div:nth-child(3){border-top:1px solid rgba(40,215,255,.13);padding-top:15px}.stats-bar div:nth-child(4){border-top:1px solid rgba(40,215,255,.13);padding-top:15px}.number-balls{gap:7px}.number-balls i{width:32px;height:32px;font-size:.82rem}}

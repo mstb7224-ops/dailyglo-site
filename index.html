@@ -1,229 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DailyGlo Lottery Agency</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DailyGlo lottery membership and public draw updates.">
+  <title>DailyGlo | Play Smart. Win Bigger.</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-
-<div class="animated-bg">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="dot-grid"></div>
-</div>
-
-<nav class="site-navbar" id="navbar">
-  <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
-      <span class="logo-icon">&#9733;</span>
-      DailyGlo
-    </a>
-    <div class="nav-links">
-      <a href="index.html" class="active">Home</a>
-      <a href="pages/faq.html">FAQ</a>
-      <a href="pages/contact.html">Contact</a>
-    </div>
-    <div class="nav-auth">
-      <a href="pages/login.html" class="btn-nav btn-nav-outline">Login</a>
-      <a href="pages/register.html" class="btn-nav btn-nav-solid">Register</a>
-    </div>
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">&#9776;</button>
+<body class="reference-home">
+  <div class="animated-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="dot-grid"></div>
   </div>
-</nav>
 
-<div class="mobile-menu" id="mobileMenu">
-  <a href="index.html">Home</a>
-  <a href="pages/faq.html">FAQ</a>
-  <a href="pages/contact.html">Contact</a>
-  <div class="mobile-auth">
-    <a href="pages/login.html" class="btn btn-outline btn-sm">Login</a>
-    <a href="pages/register.html" class="btn btn-gold btn-sm">Register</a>
-  </div>
-</div>
-
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="pulse"></span>
-      Trusted by 10,000+ Members Worldwide
-    </div>
-    <h1>
-      Your Gateway to<br>
-      <span class="accent">Lottery Success</span>
-    </h1>
-    <p>Join DailyGlo for verified membership, secure payment processing, and reliable support.</p>
-    <div class="hero-buttons">
-      <a href="pages/register.html" class="btn btn-gold">Get Started</a>
-      <a href="pages/login.html" class="btn btn-outline">Member Login</a>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="stat-num">10K+</span>
-        <span class="stat-label">Active Members</span>
+  <nav class="site-navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo"><span class="logo-icon">DG</span> DailyGlo</a>
+      <div class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="pages/faq.html">About</a>
+        <a href="#results">Results</a>
+        <a href="pages/contact.html">Contact</a>
       </div>
-      <div class="hero-stat">
-        <span class="stat-num">99%</span>
-        <span class="stat-label">Satisfaction</span>
+      <div class="nav-auth">
+        <a href="pages/login.html" class="btn-nav btn-nav-outline">Login</a>
+        <a href="pages/register.html" class="btn-nav btn-nav-solid">Register</a>
       </div>
-      <div class="hero-stat">
-        <span class="stat-num">24/7</span>
-        <span class="stat-label">Support</span>
-      </div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">&#9776;</button>
     </div>
-    <div class="hero-trust-row" aria-label="Trust indicators">
-      <span><strong>SSL</strong> Secure connection</span>
-      <span><strong>✓</strong> Verified process</span>
-      <span><strong>24/7</strong> Member support</span>
-    </div>
-    <div class="draw-preview" aria-label="Next draw preview">
-      <div class="draw-preview-copy">
-        <span class="section-label">Next Draw Window</span>
-        <h3>Public update in</h3>
-        <p class="draw-note">Countdown is a frontend preview and is not connected to a live draw service.</p>
-      </div>
-      <div class="countdown" data-countdown="7200" aria-live="polite">
-        <span><strong data-countdown-hours>02</strong><small>Hours</small></span>
-        <b>:</b>
-        <span><strong data-countdown-minutes>00</strong><small>Minutes</small></span>
-        <b>:</b>
-        <span><strong data-countdown-seconds>00</strong><small>Seconds</small></span>
-      </div>
-      <div class="jackpot-preview">
-        <small>Jackpot amount</small>
-        <strong>To be announced</strong>
-      </div>
-    </div>
-  </div>
-  <div class="scroll-indicator">
-    <div class="mouse"></div>
-    <span>Scroll</span>
-  </div>
-</section>
+  </nav>
 
-<section class="section">
-  <div class="section-header animate-in">
-    <span class="section-label">Features</span>
-    <h2 class="section-title">Why Choose DailyGlo?</h2>
-    <p class="section-subtitle">We provide a secure and transparent platform for lottery enthusiasts worldwide.</p>
-  </div>
-  <div class="trust-strip animate-in">
-    <span class="trust-strip-label">Built around transparency</span>
-    <span>🔒 SSL-ready</span>
-    <span>✓ Clear member status</span>
-    <span>◈ Support available</span>
-  </div>
-  <div class="card-grid">
-    <div class="info-card animate-in">
-      <div class="icon">&#128737;</div>
-      <h3>100% Trusted</h3>
-      <p>Verified by thousands of members worldwide.</p>
-    </div>
-    <div class="info-card animate-in">
-      <div class="icon">&#9989;</div>
-      <h3>Secure Verification</h3>
-      <p>Your Iqama and documents are safely stored.</p>
-    </div>
-    <div class="info-card animate-in">
-      <div class="icon">&#128272;</div>
-      <h3>Secure Payment</h3>
-      <p>Multiple payment options with admin approval.</p>
-    </div>
-    <div class="info-card animate-in">
-      <div class="icon">&#127911;</div>
-      <h3>24/7 Support</h3>
-      <p>Our team is always here to help you.</p>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="pages/faq.html">About</a>
+    <a href="#results">Results</a>
+    <a href="pages/contact.html">Contact</a>
+    <div class="mobile-auth">
+      <a href="pages/login.html" class="btn btn-outline btn-sm">Login</a>
+      <a href="pages/register.html" class="btn btn-gold btn-sm">Register</a>
     </div>
   </div>
-  <div class="member-proof animate-in">
-    <div>
-      <span class="section-label">Member Community</span>
-      <h3>See the latest public updates in one place.</h3>
-      <p>Published updates can be reviewed with their draw date and time. Results are informational and are not guaranteed.</p>
-    </div>
-    <a href="pages/faq.html" class="btn btn-outline btn-sm">Learn More</a>
-  </div>
-</section>
 
-<section class="section">
-  <div class="section-header animate-in">
-    <span class="section-label">Process</span>
-    <h2 class="section-title">How It Works</h2>
-    <p class="section-subtitle">Four simple steps to get started with DailyGlo.</p>
-  </div>
-  <div class="steps-grid">
-    <div class="step-item animate-in">
-      <div class="step-circle">1</div>
-      <h4>Register</h4>
-      <p>Fill in your details and upload your Iqama.</p>
-    </div>
-    <div class="step-item animate-in">
-      <div class="step-circle">2</div>
-      <h4>Get Member ID</h4>
-      <p>Receive your unique Member ID instantly by email.</p>
-    </div>
-    <div class="step-item animate-in">
-      <div class="step-circle">3</div>
-      <h4>Submit Payment</h4>
-      <p>Log in and upload your payment screenshot.</p>
-    </div>
-    <div class="step-item animate-in">
-      <div class="step-circle">4</div>
-      <h4>Get Approved</h4>
-      <p>Our team verifies and approves within 24 hours.</p>
-    </div>
-  </div>
-</section>
-
-<section class="cta-section">
-  <div class="cta-card animate-in">
-    <h2>Ready to Join DailyGlo?</h2>
-    <p>Register today and become part of our growing community.</p>
-    <a href="pages/register.html" class="btn btn-gold">Register Now</a>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="index.html" class="nav-logo">
-          <span class="logo-icon">&#9733;</span>
-          DailyGlo
-        </a>
-        <p>Your trusted lottery agency for secure membership.</p>
-      </div>
-      <div class="footer-links-group">
-        <div>
-          <h4>Quick Links</h4>
-          <a href="index.html">Home</a>
-          <a href="pages/faq.html">FAQ</a>
-          <a href="pages/contact.html">Contact</a>
+  <main>
+    <section class="reference-hero">
+      <div class="reference-hero-content">
+        <div class="hero-badge"><span class="pulse"></span> Trusted lottery membership platform</div>
+        <h1>PLAY SMART.<br><span class="neon-text">WIN BIGGER.</span></h1>
+        <p>Get closer to every draw with a transparent membership experience, public updates and responsive support.</p>
+        <div class="hero-buttons">
+          <a href="pages/register.html" class="btn btn-neon">Book Your Paper Now <span>→</span></a>
+          <a href="pages/contact.html" class="btn btn-whatsapp">Chat on WhatsApp</a>
         </div>
-        <div>
-          <h4>Account</h4>
-          <a href="pages/register.html">Register</a>
-          <a href="pages/login.html">Login</a>
-          <a href="pages/payment.html">Payment</a>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <a href="pages/privacy.html">Privacy</a>
-          <a href="pages/terms.html">Terms</a>
+        <div class="hero-trust-row" aria-label="Trust indicators">
+          <span><strong>SSL</strong> Secure connection</span>
+          <span><strong>✓</strong> Clear member status</span>
+          <span><strong>24/7</strong> Support</span>
         </div>
       </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 DailyGlo Lottery Agency. All Rights Reserved.</p>
-      <div class="footer-legal">
-        <a href="pages/privacy.html">Privacy</a>
-        <a href="pages/terms.html">Terms</a>
-      </div>
-    </div>
-  </div>
-</footer>
 
-<script src="js/app.js"></script>
+      <div class="draw-panel" aria-label="Next draw preview">
+        <div class="draw-panel-top"><span class="live-dot"></span> NEXT DRAW <em>PREVIEW</em></div>
+        <div class="draw-date">Public update window</div>
+        <div class="draw-time">Information released before the draw</div>
+        <div class="countdown neon-countdown" data-countdown="7200" aria-live="polite">
+          <span><strong data-countdown-days>00</strong><small>Days</small></span>
+          <span><strong data-countdown-hours>02</strong><small>Hours</small></span>
+          <span><strong data-countdown-minutes>00</strong><small>Minutes</small></span>
+          <span><strong data-countdown-seconds>00</strong><small>Seconds</small></span>
+        </div>
+        <div class="draw-status">Frontend preview only · live draw service not connected</div>
+        <div class="jackpot-chip"><span>✦</span><b>Jackpot</b><strong>To be announced</strong></div>
+        <div class="number-balls" aria-hidden="true"><i>7</i><i>2</i><i>9</i><i>6</i><i>3</i></div>
+      </div>
+    </section>
+
+    <section class="stats-bar" aria-label="Platform statistics">
+      <div><strong>12,547+</strong><span>Active Members</span></div>
+      <div><strong>98.6%</strong><span>Service Satisfaction</span></div>
+      <div><strong>50,000+</strong><span>Successful Bookings</span></div>
+      <div><strong>24/7</strong><span>Customer Support</span></div>
+    </section>
+
+    <section class="section reference-section" id="results">
+      <div class="section-header animate-in">
+        <span class="section-label">Member Advantage</span>
+        <h2 class="section-title">Why Choose <span class="neon-text">DailyGlo?</span></h2>
+        <p class="section-subtitle">A clear, modern experience built around verified membership, transparent updates and helpful support.</p>
+      </div>
+      <div class="card-grid reference-card-grid">
+        <div class="info-card reference-card animate-in"><div class="icon neon-icon">◈</div><h3>Verified Updates</h3><p>Review published draw information with its date and time context.</p></div>
+        <div class="info-card reference-card animate-in"><div class="icon neon-icon">✓</div><h3>High Visibility</h3><p>Important public updates are presented clearly and without clutter.</p></div>
+        <div class="info-card reference-card animate-in"><div class="icon neon-icon">⚡</div><h3>Fast & Secure</h3><p>Simple member navigation with a clean and secure-looking interface.</p></div>
+        <div class="info-card reference-card animate-in"><div class="icon neon-icon">♧</div><h3>24/7 Support</h3><p>Find answers quickly and connect with the DailyGlo support team.</p></div>
+      </div>
+    </section>
+
+    <section class="section reference-section process-section">
+      <div class="section-header animate-in"><span class="section-label">Simple Process</span><h2 class="section-title">How It <span class="neon-text">Works</span></h2><p class="section-subtitle">Four simple steps to get started with DailyGlo.</p></div>
+      <div class="steps-grid reference-steps">
+        <div class="step-item animate-in"><div class="step-circle">1</div><h4>Register</h4><p>Create your account and submit the required details.</p></div>
+        <div class="step-item animate-in"><div class="step-circle">2</div><h4>Choose Paper</h4><p>Select the membership option that suits you.</p></div>
+        <div class="step-item animate-in"><div class="step-circle">3</div><h4>Make Payment</h4><p>Submit your payment proof for review.</p></div>
+        <div class="step-item animate-in"><div class="step-circle">4</div><h4>Get Approved</h4><p>Track your member status after review.</p></div>
+      </div>
+    </section>
+
+    <section class="cta-section reference-cta">
+      <div class="cta-card animate-in"><span class="section-label">Start Today</span><h2>Join DailyGlo Today</h2><p>Play smart, stay informed and enjoy a clearer member experience.</p><a href="pages/register.html" class="btn btn-neon">Register Now <span>→</span></a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner"><div class="footer-top"><div class="footer-brand"><a href="index.html" class="nav-logo"><span class="logo-icon">DG</span> DailyGlo</a><p>Your trusted lottery membership platform.</p></div><div class="footer-links-group"><div><h4>Quick Links</h4><a href="index.html">Home</a><a href="pages/faq.html">FAQ</a><a href="pages/contact.html">Contact</a></div><div><h4>Account</h4><a href="pages/register.html">Register</a><a href="pages/login.html">Login</a><a href="pages/payment.html">Payment</a></div><div><h4>Legal</h4><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div><div class="footer-bottom"><p>&copy; 2026 DailyGlo. All Rights Reserved.</p><div class="footer-legal"><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div>
+  </footer>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
