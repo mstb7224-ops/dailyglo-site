@@ -10,93 +10,50 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="reference-home compact-home">
-  <div class="animated-bg" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="dot-grid"></div></div>
-
-  <nav class="site-navbar" id="navbar">
-    <div class="nav-inner">
-      <a href="index.html" class="brand-lockup" aria-label="DailyGlo home">
-        <img class="brand-logo-image" src="images/dailyglo_logo_reference.png" alt="DailyGlo Lottery Agency">
-      </a>
-      <div class="nav-links">
-        <a href="index.html" class="active">Home</a>
-        <a href="#results">Results</a>
-        <a href="pages/faq.html">About Us</a>
-        <a href="pages/contact.html">Contact</a>
-      </div>
-      <div class="nav-auth"><a href="pages/login.html" class="btn-nav btn-nav-outline">Login</a><a href="pages/register.html" class="btn-nav btn-nav-solid">Register</a></div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">☰</button>
+<body class="exact-reference-home">
+  <main class="reference-poster-page">
+    <div class="reference-poster-frame" role="img" aria-label="DailyGlo Lottery Agency homepage preview showing the next draw on 16 August 2026, membership workflow, recent winners, trust indicators, and account actions.">
+      <img src="images/dailyglo_home_reference.webp" alt="DailyGlo Lottery Agency homepage reference artwork" class="reference-poster-image">
+      <nav class="reference-hotspots" aria-label="DailyGlo homepage navigation">
+        <a class="poster-hotspot poster-home" href="index.html" aria-label="Home"></a>
+        <a class="poster-hotspot poster-results" href="#results" aria-label="Results"></a>
+        <a class="poster-hotspot poster-about" href="pages/faq.html" aria-label="About Us"></a>
+        <a class="poster-hotspot poster-how" href="#how-it-works" aria-label="How to Play"></a>
+        <a class="poster-hotspot poster-contact" href="pages/contact.html" aria-label="Contact"></a>
+        <a class="poster-hotspot poster-login" href="pages/login.html" aria-label="Login"></a>
+        <a class="poster-hotspot poster-register" href="pages/register.html" aria-label="Register"></a>
+        <a class="poster-hotspot poster-play" href="pages/register.html" aria-label="Play now and win big"></a>
+        <a class="poster-hotspot poster-view-all" href="#results" aria-label="View all recent winners"></a>
+      </nav>
     </div>
-  </nav>
 
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html">Home</a><a href="#results">Results</a><a href="pages/faq.html">About Us</a><a href="pages/contact.html">Contact</a>
-    <div class="mobile-auth"><a href="pages/login.html" class="btn btn-outline btn-sm">Login</a><a href="pages/register.html" class="btn btn-gold btn-sm">Register</a></div>
-  </div>
-
-  <main>
-    <section class="reference-hero compact-hero">
-      <div class="city-silhouette" aria-hidden="true"></div>
-      <div class="hero-heading">
-        <span class="hero-kicker">✦ NEXT DRAW ✦</span>
-        <h1>16 AUGUST 2026</h1>
-        <p class="hero-time">◷ 12:00 PM <span>•</span> SAUDI ARABIA TIME</p>
+    <section class="reference-accessible-content" id="how-it-works" aria-label="DailyGlo homepage information">
+      <h1>DailyGlo Lottery Agency</h1>
+      <p>Next draw: 16 August 2026 at 12:00 PM Saudi Arabia time. Your local draw time is shown automatically.</p>
+      <div class="reference-live-countdown" data-countdown="7200" aria-live="polite">
+        <span><strong data-countdown-days>00</strong> Days</span>
+        <span><strong data-countdown-hours>00</strong> Hours</span>
+        <span><strong data-countdown-minutes>00</strong> Minutes</span>
+        <span><strong data-countdown-seconds>00</strong> Seconds</span>
       </div>
-      <div class="draw-panel" aria-label="Next draw countdown">
-        <div class="neon-countdown" data-countdown="7200" aria-live="polite">
-          <span><strong data-countdown-days>00</strong><small>Days</small></span>
-          <b>:</b><span><strong data-countdown-hours>00</strong><small>Hours</small></span>
-          <b>:</b><span><strong data-countdown-minutes>00</strong><small>Minutes</small></span>
-          <b>:</b><span><strong data-countdown-seconds>00</strong><small>Seconds</small></span>
-        </div>
-        <div class="countdown-caption">DRAW COUNTDOWN</div>
-        <p class="local-time-line">Your local time: <strong data-local-draw-time>Loading…</strong><span data-local-timezone>Loading timezone…</span></p>
-      </div>
-    </section>
-
-    <section class="trust-strip compact-trust" aria-label="DailyGlo trust indicators">
-      <div><span class="trust-icon">◈</span><strong>100% TRUSTED</strong><small>Clear member process</small></div>
-      <div><span class="trust-icon">▣</span><strong>SECURE PAYMENT</strong><small>Your details are protected</small></div>
-      <div><span class="trust-icon">♕</span><strong>BIG OPPORTUNITIES</strong><small>Join and stay informed</small></div>
-      <div><span class="trust-icon">◌</span><strong>24/7 SUPPORT</strong><small>We are here to help</small></div>
-    </section>
-
-    <section class="reference-section split-section" id="results">
-      <div class="workflow-panel panel-glow">
-        <div class="panel-heading"><span></span><h2>HOW DAILYGLO WORK</h2><span></span></div>
-        <div class="workflow-steps">
-          <div class="workflow-step"><span>1</span><div class="workflow-art">♙<b>+</b>▤</div><strong>Register</strong><small>Fill in your details<br>and upload your ID.</small></div>
-          <div class="workflow-step"><span>2</span><div class="workflow-art">▣<b>+</b>✦</div><strong>Get Member ID</strong><small>Receive your unique<br>member identification.</small></div>
-          <div class="workflow-step"><span>3</span><div class="workflow-art">▤<b>+</b>✓</div><strong>Submit Payment</strong><small>Upload your payment<br>proof for review.</small></div>
-          <div class="workflow-step"><span>4</span><div class="workflow-art">✓</div><strong>Get Approved</strong><small>See your status and<br>access member features.</small></div>
-        </div>
-        <a class="btn btn-neon compact-cta" href="pages/register.html">PLAY NOW &amp; WIN BIG <span>♕</span></a>
-      </div>
-      <div class="results-panel panel-glow winners-panel" id="winners">
-        <div class="panel-heading results-heading"><h2>RECENT WINNERS</h2><a href="#winners">View All</a></div>
-        <div class="winner-feature-grid">
-          <article class="winner-card"><div class="winner-avatar">A</div><div class="winner-copy"><strong>Ahmed S.</strong><span>Riyadh, Saudi Arabia</span><b>WINNINGS</b><em>SAR 25,000</em></div></article>
-          <article class="winner-card"><div class="winner-avatar">1</div><div class="winner-copy"><strong>Imran H.</strong><span>Jeddah, Saudi Arabia</span><b>WINNINGS</b><em>SAR 15.500</em></div></article>
-          <article class="winner-card"><div class="winner-avatar">K</div><div class="winner-copy"><strong>Khalid M.</strong><span>Dammam, Saudi Arabia</span><b>WINNINGS</b><em>SAR 10,000</em></div></article>
-        </div>
-        <div class="winner-list" aria-label="Additional recent winners">
-          <div><strong>Abdul R.</strong><span>Location not provided</span><b>SAR 8,200</b></div>
-          <div><strong>Sunny Khan</strong><span>Riyadh, Saudi Arabia</span><b>SAR 1,25,000</b></div>
-          <div><strong>Nur Hasan</strong><span>Riyadh, Saudi Arabia</span><b>SAR 1,05,000</b></div>
-          <div><strong>Hossain Ali</strong><span>Dammam, Saudi Arabia</span><b>SAR 1,05,000</b></div>
-          <div><strong>Sujon Khan</strong><span>Abha, Saudi Arabia</span><b>SAR 72,000</b></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="compact-feature-row" aria-label="DailyGlo platform features">
-      <div><strong>◌</strong><b>MEMBER-FIRST</b><small>Clear account status</small></div><div><strong>⌁</strong><b>UTC DRAW TIME</b><small>Local time displayed</small></div><div><strong>♕</strong><b>SECURE REVIEW</b><small>Admin-checked payments</small></div><div><strong>◉</strong><b>24/7 SUPPORT</b><small>Help when you need it</small></div>
+      <p>Your local time: <strong data-local-draw-time>Loading…</strong> <span data-local-timezone>Loading timezone…</span></p>
+      <h2>How DailyGlo Works</h2>
+      <ol>
+        <li>Register and upload your ID.</li>
+        <li>Receive your unique member identification.</li>
+        <li>Submit payment proof for review.</li>
+        <li>Get approved and access member features.</li>
+      </ol>
+      <h2 id="results">Recent Winners</h2>
+      <ul>
+        <li>Ahmed S. — Riyadh, Saudi Arabia — SAR 25,000</li>
+        <li>Imran H. — Jeddah, Saudi Arabia — SAR 15,500</li>
+        <li>Khalid M. — Dammam, Saudi Arabia — SAR 10,000</li>
+        <li>Abdul R. — Dubai, UAE — SAR 8,200</li>
+      </ul>
+      <p>Trust indicators: 100% trusted, secure payment, big winnings, and 24/7 support.</p>
     </section>
   </main>
-
-  <footer class="site-footer compact-footer">
-    <div class="footer-inner"><div class="footer-top"><div class="footer-brand"><a href="index.html" class="brand-lockup"><img class="brand-logo-image" src="images/dailyglo_logo_reference.png" alt="DailyGlo Lottery Agency"></a><p>Your trusted membership platform for clear draw updates.</p></div><div class="footer-links-group"><div><h4>Quick Links</h4><a href="index.html">Home</a><a href="#results">Results</a><a href="pages/contact.html">Contact</a></div><div><h4>Account</h4><a href="pages/register.html">Register</a><a href="pages/login.html">Login</a><a href="pages/payment.html">Payment</a></div><div><h4>Legal</h4><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div><div class="footer-bottom"><p>&copy; 2026 DailyGlo Lottery Agency. All Rights Reserved.</p><div class="footer-legal"><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div>
-  </footer>
   <script src="js/app.js"></script>
 </body>
 </html>

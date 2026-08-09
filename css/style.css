@@ -350,3 +350,24 @@ body:not(.reference-home) .contact-grid .form-card { margin:0; }
   .compact-home .compact-feature-row { width: 100%; min-height: auto; }
   .compact-home .split-section { box-sizing: border-box; }
 }
+
+/* Exact reference composition: poster frame scales as one stable visual canvas. */
+.exact-reference-home { min-height:100vh; margin:0; background:#02060e; color:#f4f8ff; overflow-x:hidden; }
+.reference-poster-page { width:min(100%,733px); margin:0 auto; background:#02060e; }
+.reference-poster-frame { position:relative; width:100%; aspect-ratio:733 / 1100; overflow:hidden; background:#02060e; }
+.reference-poster-image { display:block; width:100%; height:100%; object-fit:cover; user-select:none; }
+.reference-hotspots { position:absolute; inset:0; z-index:2; }
+.poster-hotspot { position:absolute; display:block; border-radius:7px; outline:none; }
+.poster-hotspot:focus-visible { box-shadow:0 0 0 3px #ffe16b,0 0 18px #18cfff; background:rgba(24,207,255,.14); }
+.poster-home { left:34.5%; top:3.25%; width:5.2%; height:2.4%; }
+.poster-results { left:41.5%; top:3.25%; width:7.8%; height:2.4%; }
+.poster-about { left:50%; top:3.25%; width:8.6%; height:2.4%; }
+.poster-how { left:59.2%; top:3.25%; width:10.5%; height:2.4%; }
+.poster-contact { left:70%; top:3.25%; width:8.2%; height:2.4%; }
+.poster-login { left:78.7%; top:2.45%; width:9.7%; height:4.3%; }
+.poster-register { left:88.8%; top:2.25%; width:10.4%; height:4.5%; }
+.poster-play { left:12.4%; top:79.8%; width:34%; height:4.8%; }
+.poster-view-all { left:89.5%; top:57.5%; width:8.2%; height:2.5%; }
+.reference-accessible-content { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; }
+@media (max-width:733px) { .reference-poster-page { width:100%; } }
+@media (prefers-reduced-motion:reduce) { .poster-hotspot { transition:none; } }
