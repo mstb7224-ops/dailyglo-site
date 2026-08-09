@@ -68,11 +68,33 @@
     });
   }
 
+  var API_BASE = (window.DAILYGLO_API_BASE || 'https://api.dailyglo.online').replace(/\/$/, '');
+
+  function apiFetch(path, options) {
+    var request = options || {};
+    request.credentials = 'include';
+    request.headers = request.headers || {};
+    var token = window.localStorage.getItem('dailyglo_member_token');
+    if (token) request.headers.Authorization = 'Bearer ' + token;
+    return fetch(API_BASE + path, request).then(function (response) {
+      return response.json().catch(function () { return {}; }).then(function (body) {
+        if (!response.ok) throw new Error(body.error || 'The request could not be completed.');
+        return body;
+      });
+    });
+  }
+
   function backendUnavailable(form, message) {
     var status = getStatusElement(form);
     var button = form && form.querySelector('button[type="submit"]');
     setButtonState(button, false);
     showStatus(status, message || 'Frontend validation completed. Backend/API connection is not configured yet, so no data was sent.', 'info');
+  }
+
+  function handleApiError(form, error) {
+    var button = form && form.querySelector('button[type="submit"]');
+    setButtonState(button, false);
+    showStatus(getStatusElement(form), error && error.message ? error.message : 'Unable to connect to DailyGlo securely.', 'error');
   }
 
   window.toggleMobileMenu = function () {
@@ -142,7 +164,18 @@
         return;
       }
       if (!validateFile(byId('iqamaFile'), status, 'Iqama image')) return;
-      backendUnavailable(form, 'Registration form is valid. Backend/API is not connected yet, so the registration was not submitted.');
+      var button = byId('submitBtn');
+      setButtonState(button, true, 'Submitting...');
+      var data = new FormData();
+      ['fullName', 'email', 'mobile', 'city', 'country', 'password'].forEach(function (id) {
+        data.append(id, byId(id).value.trim());
+      });
+      data.append('iqama', byId('iqamaFile').files[0]);
+      apiFetch('/api/auth/register', { method: 'POST', body: data }).then(function (result) {
+        setButtonState(button, false);
+        showStatus(status, 'Registration received. Your Member ID is ' + result.member.memberCode + '. Please log in to submit payment.', 'success');
+        form.reset();
+      }).catch(function (error) { handleApiError(form, error); });
     });
   }
 
@@ -155,7 +188,18 @@
         form.reportValidity();
         return;
       }
-      backendUnavailable(form, 'Login form is valid. Authentication backend is not connected yet, so no login was performed.');
+      var button = byId('submitBtn');
+      setButtonState(button, true, 'Signing in...');
+      apiFetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login: byId('loginId').value.trim(), password: byId('password').value })
+      }).then(function (result) {
+        setButtonState(button, false);
+        if (result.token) window.localStorage.setItem('dailyglo_member_token', result.token);
+        showStatus(getStatusElement(form), 'Login successful. Redirecting to payment...', 'success');
+        window.setTimeout(function () { window.location.href = 'payment.html'; }, 500);
+      }).catch(function (error) { handleApiError(form, error); });
     });
   }
 
@@ -184,7 +228,19 @@
         return;
       }
       if (!validateFile(byId('screenshotFile'), status, 'Payment screenshot')) return;
-      backendUnavailable(form, 'Payment form is valid. Payment verification/upload backend is not connected yet, so no payment record was submitted.');
+      var button = byId('submitBtn');
+      setButtonState(button, true, 'Uploading...');
+      var selected = document.querySelector('input[name="paymentMethod"]:checked');
+      var methodMap = { bkash: 'bkash', bank: 'bank_transfer', binance: 'binance_pay' };
+      var data = new FormData();
+      data.append('method', methodMap[selected ? selected.value : 'bkash']);
+      data.append('transactionReference', (byId('transactionId') && byId('transactionId').value.trim()) || '');
+      data.append('screenshot', byId('screenshotFile').files[0]);
+      apiFetch('/api/payments', { method: 'POST', body: data }).then(function () {
+        setButtonState(button, false);
+        showStatus(status, 'Payment proof submitted successfully. It is now awaiting admin review.', 'success');
+        form.reset();
+      }).catch(function (error) { handleApiError(form, error); });
     });
   }
 
