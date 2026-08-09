@@ -3,128 +3,89 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DailyGlo lottery membership and public draw updates.">
-  <title>DailyGlo | Play Smart. Win Bigger.</title>
+  <meta name="description" content="DailyGlo lottery membership, secure payment review, and public draw updates.">
+  <title>DailyGlo | Lottery Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="reference-home">
-  <div class="animated-bg" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="dot-grid"></div>
-  </div>
+<body class="reference-home compact-home">
+  <div class="animated-bg" aria-hidden="true"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="dot-grid"></div></div>
 
   <nav class="site-navbar" id="navbar">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo"><span class="logo-icon">DG</span> DailyGlo</a>
+      <a href="index.html" class="brand-lockup" aria-label="DailyGlo home">
+        <img class="brand-logo-image" src="images/dailyglo_logo_reference.png" alt="DailyGlo Lottery Agency">
+      </a>
       <div class="nav-links">
         <a href="index.html" class="active">Home</a>
-        <a href="pages/faq.html">About</a>
         <a href="#results">Results</a>
+        <a href="pages/faq.html">About Us</a>
         <a href="pages/contact.html">Contact</a>
       </div>
-      <div class="nav-auth">
-        <a href="pages/login.html" class="btn-nav btn-nav-outline">Login</a>
-        <a href="pages/register.html" class="btn-nav btn-nav-solid">Register</a>
-      </div>
-      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">&#9776;</button>
+      <div class="nav-auth"><a href="pages/login.html" class="btn-nav btn-nav-outline">Login</a><a href="pages/register.html" class="btn-nav btn-nav-solid">Register</a></div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">☰</button>
     </div>
   </nav>
 
   <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html">Home</a>
-    <a href="pages/faq.html">About</a>
-    <a href="#results">Results</a>
-    <a href="pages/contact.html">Contact</a>
-    <div class="mobile-auth">
-      <a href="pages/login.html" class="btn btn-outline btn-sm">Login</a>
-      <a href="pages/register.html" class="btn btn-gold btn-sm">Register</a>
-    </div>
+    <a href="index.html">Home</a><a href="#results">Results</a><a href="pages/faq.html">About Us</a><a href="pages/contact.html">Contact</a>
+    <div class="mobile-auth"><a href="pages/login.html" class="btn btn-outline btn-sm">Login</a><a href="pages/register.html" class="btn btn-gold btn-sm">Register</a></div>
   </div>
 
   <main>
-    <section class="reference-hero">
-      <div class="reference-hero-content">
-        <div class="hero-badge"><span class="pulse"></span> Trusted lottery membership platform</div>
-        <h1>PLAY SMART.<br><span class="neon-text">WIN BIGGER.</span></h1>
-        <p>Get closer to every draw with a transparent membership experience, public updates and responsive support.</p>
-        <div class="hero-buttons">
-          <a href="pages/register.html" class="btn btn-neon">Book Your Paper Now <span>→</span></a>
-          <a href="pages/contact.html" class="btn btn-whatsapp">Chat on WhatsApp</a>
-        </div>
-        <div class="hero-trust-row" aria-label="Trust indicators">
-          <span><strong>SSL</strong> Secure connection</span>
-          <span><strong>✓</strong> Clear member status</span>
-          <span><strong>24/7</strong> Support</span>
-        </div>
+    <section class="reference-hero compact-hero">
+      <div class="city-silhouette" aria-hidden="true"></div>
+      <div class="hero-heading">
+        <span class="hero-kicker">✦ NEXT DRAW ✦</span>
+        <h1>16 AUGUST 2026</h1>
+        <p class="hero-time">◷ 12:00 PM <span>•</span> SAUDI ARABIA TIME</p>
       </div>
-
-      <div class="draw-panel" aria-label="Next draw preview">
-        <div class="draw-panel-top"><span class="live-dot"></span> NEXT DRAW <em>PREVIEW</em></div>
-        <div class="draw-date">16 August 2026 · 12:00 GMT+3</div>
-        <div class="draw-time">Your local draw time: <strong data-local-draw-time>Loading local time…</strong><br><span class="local-zone">Detected timezone: <span data-local-timezone>Loading…</span></span></div>
-        <div class="countdown neon-countdown" data-countdown="7200" aria-live="polite">
+      <div class="draw-panel" aria-label="Next draw countdown">
+        <div class="neon-countdown" data-countdown="7200" aria-live="polite">
           <span><strong data-countdown-days>00</strong><small>Days</small></span>
-          <span><strong data-countdown-hours>02</strong><small>Hours</small></span>
-          <span><strong data-countdown-minutes>00</strong><small>Minutes</small></span>
-          <span><strong data-countdown-seconds>00</strong><small>Seconds</small></span>
+          <b>:</b><span><strong data-countdown-hours>00</strong><small>Hours</small></span>
+          <b>:</b><span><strong data-countdown-minutes>00</strong><small>Minutes</small></span>
+          <b>:</b><span><strong data-countdown-seconds>00</strong><small>Seconds</small></span>
         </div>
-        <div class="draw-status">Frontend preview only · live draw service not connected</div>
-        <div class="jackpot-chip"><span>✦</span><b>Jackpot</b><strong>To be announced</strong></div>
-        <div class="number-balls" aria-hidden="true"><i>7</i><i>2</i><i>9</i><i>6</i><i>3</i></div>
+        <div class="countdown-caption">DRAW COUNTDOWN</div>
+        <p class="local-time-line">Your local time: <strong data-local-draw-time>Loading…</strong><span data-local-timezone>Loading timezone…</span></p>
       </div>
     </section>
 
-    <section class="stats-bar" aria-label="Platform statistics">
-      <div><strong>12,547+</strong><span>Active Members</span></div>
-      <div><strong>98.6%</strong><span>Service Satisfaction</span></div>
-      <div><strong>50,000+</strong><span>Successful Bookings</span></div>
-      <div><strong>24/7</strong><span>Customer Support</span></div>
+    <section class="trust-strip compact-trust" aria-label="DailyGlo trust indicators">
+      <div><span class="trust-icon">◈</span><strong>100% TRUSTED</strong><small>Clear member process</small></div>
+      <div><span class="trust-icon">▣</span><strong>SECURE PAYMENT</strong><small>Your details are protected</small></div>
+      <div><span class="trust-icon">♕</span><strong>BIG OPPORTUNITIES</strong><small>Join and stay informed</small></div>
+      <div><span class="trust-icon">◌</span><strong>24/7 SUPPORT</strong><small>We are here to help</small></div>
     </section>
 
-    <section class="section reference-section" id="results">
-      <div class="section-header animate-in">
-        <span class="section-label">Member Advantage</span>
-        <h2 class="section-title">Why Choose <span class="neon-text">DailyGlo?</span></h2>
-        <p class="section-subtitle">A clear, modern experience built around verified membership, transparent updates and helpful support.</p>
+    <section class="reference-section split-section" id="results">
+      <div class="workflow-panel panel-glow">
+        <div class="panel-heading"><span></span><h2>HOW DAILYGLO WORK</h2><span></span></div>
+        <div class="workflow-steps">
+          <div class="workflow-step"><span>1</span><div class="workflow-art">♙<b>+</b>▤</div><strong>Register</strong><small>Fill in your details<br>and upload your ID.</small></div>
+          <div class="workflow-step"><span>2</span><div class="workflow-art">▣<b>+</b>✦</div><strong>Get Member ID</strong><small>Receive your unique<br>member identification.</small></div>
+          <div class="workflow-step"><span>3</span><div class="workflow-art">▤<b>+</b>✓</div><strong>Submit Payment</strong><small>Upload your payment<br>proof for review.</small></div>
+          <div class="workflow-step"><span>4</span><div class="workflow-art">✓</div><strong>Get Approved</strong><small>See your status and<br>access member features.</small></div>
+        </div>
+        <a class="btn btn-neon compact-cta" href="pages/register.html">PLAY NOW &amp; WIN BIG <span>♕</span></a>
       </div>
-      <div class="card-grid reference-card-grid">
-        <div class="info-card reference-card animate-in"><div class="icon neon-icon">◈</div><h3>Verified Updates</h3><p>Review published draw information with its date and time context.</p></div>
-        <div class="info-card reference-card animate-in"><div class="icon neon-icon">✓</div><h3>High Visibility</h3><p>Important public updates are presented clearly and without clutter.</p></div>
-        <div class="info-card reference-card animate-in"><div class="icon neon-icon">⚡</div><h3>Fast & Secure</h3><p>Simple member navigation with a clean and secure-looking interface.</p></div>
-        <div class="info-card reference-card animate-in"><div class="icon neon-icon">♧</div><h3>24/7 Support</h3><p>Find answers quickly and connect with the DailyGlo support team.</p></div>
-      </div>
-    </section>
-
-    <section class="section reference-section process-section">
-      <div class="section-header animate-in"><span class="section-label">Simple Process</span><h2 class="section-title">How It <span class="neon-text">Works</span></h2><p class="section-subtitle">Four simple steps to get started with DailyGlo.</p></div>
-      <div class="steps-grid reference-steps">
-        <div class="step-item animate-in"><div class="step-circle">1</div><h4>Register</h4><p>Create your account and submit the required details.</p></div>
-        <div class="step-item animate-in"><div class="step-circle">2</div><h4>Choose Paper</h4><p>Select the membership option that suits you.</p></div>
-        <div class="step-item animate-in"><div class="step-circle">3</div><h4>Make Payment</h4><p>Submit your payment proof for review.</p></div>
-        <div class="step-item animate-in"><div class="step-circle">4</div><h4>Get Approved</h4><p>Track your member status after review.</p></div>
+      <div class="results-panel panel-glow">
+        <div class="panel-heading results-heading"><h2>PUBLIC LEAK NUMBERS</h2><a href="https://dailygloapi-pvcg6ivf.manus.space/public/leak-numbers">View All</a></div>
+        <div class="public-result-empty"><span class="empty-orbit">✦</span><strong>Published updates appear here</strong><p>Approved public Leak Numbers will be shown with their publish time and UTC draw schedule.</p><a href="https://dailygloapi-pvcg6ivf.manus.space/public/leak-numbers" class="text-link">Open public results →</a></div>
       </div>
     </section>
 
-    <section class="section showcase-section">
-      <div class="section-header animate-in"><span class="section-label">Member Journey</span><h2 class="section-title">See How DailyGlo <span class="neon-text">Works</span></h2><p class="section-subtitle">A visual overview of registration, payment review and member approval.</p></div>
-      <div class="showcase-grid">
-        <figure class="showcase-card animate-in"><img src="images/step-register.webp" alt="Registration journey preview"><figcaption><strong>01</strong><span>Register securely</span></figcaption></figure>
-        <figure class="showcase-card animate-in"><img src="images/step-member-id.webp" alt="Member onboarding preview"><figcaption><strong>02</strong><span>Complete member details</span></figcaption></figure>
-        <figure class="showcase-card animate-in"><img src="images/step-payment.webp" alt="Payment review preview"><figcaption><strong>03</strong><span>Submit payment proof</span></figcaption></figure>
-        <figure class="showcase-card animate-in"><img src="images/step-approved.webp" alt="Approved member preview"><figcaption><strong>04</strong><span>Track approval status</span></figcaption></figure>
-      </div>
-    </section>
-
-    <section class="cta-section reference-cta">
-      <div class="cta-card animate-in"><span class="section-label">Start Today</span><h2>Join DailyGlo Today</h2><p>Play smart, stay informed and enjoy a clearer member experience.</p><a href="pages/register.html" class="btn btn-neon">Register Now <span>→</span></a></div>
+    <section class="compact-feature-row" aria-label="DailyGlo platform features">
+      <div><strong>◌</strong><b>MEMBER-FIRST</b><small>Clear account status</small></div><div><strong>⌁</strong><b>UTC DRAW TIME</b><small>Local time displayed</small></div><div><strong>♕</strong><b>SECURE REVIEW</b><small>Admin-checked payments</small></div><div><strong>◉</strong><b>24/7 SUPPORT</b><small>Help when you need it</small></div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner"><div class="footer-top"><div class="footer-brand"><a href="index.html" class="nav-logo"><span class="logo-icon">DG</span> DailyGlo</a><p>Your trusted lottery membership platform.</p></div><div class="footer-links-group"><div><h4>Quick Links</h4><a href="index.html">Home</a><a href="pages/faq.html">FAQ</a><a href="pages/contact.html">Contact</a></div><div><h4>Account</h4><a href="pages/register.html">Register</a><a href="pages/login.html">Login</a><a href="pages/payment.html">Payment</a></div><div><h4>Legal</h4><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div><div class="footer-bottom"><p>&copy; 2026 DailyGlo. All Rights Reserved.</p><div class="footer-legal"><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div>
+  <footer class="site-footer compact-footer">
+    <div class="footer-inner"><div class="footer-top"><div class="footer-brand"><a href="index.html" class="brand-lockup"><img class="brand-logo-image" src="images/dailyglo_logo_reference.png" alt="DailyGlo Lottery Agency"></a><p>Your trusted membership platform for clear draw updates.</p></div><div class="footer-links-group"><div><h4>Quick Links</h4><a href="index.html">Home</a><a href="#results">Results</a><a href="pages/contact.html">Contact</a></div><div><h4>Account</h4><a href="pages/register.html">Register</a><a href="pages/login.html">Login</a><a href="pages/payment.html">Payment</a></div><div><h4>Legal</h4><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div><div class="footer-bottom"><p>&copy; 2026 DailyGlo Lottery Agency. All Rights Reserved.</p><div class="footer-legal"><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div></div></div>
   </footer>
-
   <script src="js/app.js"></script>
 </body>
 </html>
