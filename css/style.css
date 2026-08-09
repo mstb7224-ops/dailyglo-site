@@ -324,6 +324,23 @@ body:not(.reference-home) .contact-grid .form-card { margin:0; }
   .nav-inner, .section, .reference-hero, .split-section, .stats-bar, .reference-section, .showcase-section { max-width: 1280px; }
 }
 
+/* Navbar safety: never let nav items clip or overflow at any window width */
+@media (max-width: 1024px) {
+  .nav-inner { padding: 0 18px; }
+  .nav-links { gap: 20px; }
+  .nav-links a { font-size: .85rem; }
+  .btn-nav { padding: 9px 16px; font-size: .82rem; }
+  .nav-logo { font-size: 1.35rem; gap: 8px; }
+  .logo-icon { width: 32px; height: 32px; font-size: 1.05rem; }
+}
+@media (max-width: 860px) {
+  .nav-links { gap: 12px; }
+  .btn-nav { padding: 8px 12px; }
+}
+@media (min-width: 721px) and (max-width: 860px) {
+  .nav-links a:nth-child(n+3) { display: none; }
+}
+
 /* Reference logo asset lockup */
 .compact-home .brand-logo-image{display:block;width:148px;height:auto;max-height:48px;object-fit:contain;object-position:left center}
 .compact-home .footer-brand .brand-logo-image{width:154px;max-height:54px}
@@ -395,7 +412,8 @@ body:not(.reference-home) .contact-grid .form-card { margin:0; }
 @media (prefers-reduced-motion:reduce) { .poster-hotspot { transition:none; } }
 
 /* ===== Visible live countdown section ===== */
-.live-countdown-section { width:min(100%, 733px); margin:0 auto; padding:26px 18px 60px; }
+.live-countdown-section { width:100%; padding:32px 18px 64px; background:linear-gradient(180deg,#02060e 0%,rgba(7,34,68,.72) 45%,#02060e 100%); }
+.live-countdown-wrap { width:min(100%,733px); margin:0 auto; }
 .live-countdown-wrap { padding:28px 22px 24px; border-radius:22px; border:1px solid rgba(40,215,255,.42); background:radial-gradient(circle at 50% 42%,rgba(19,103,193,.34),transparent 48%),linear-gradient(155deg,rgba(8,37,73,.95),rgba(2,12,30,.95)); box-shadow:0 0 0 1px rgba(40,215,255,.08),0 22px 70px rgba(0,0,0,.35),inset 0 0 48px rgba(40,215,255,.06); text-align:center; }
 .live-badge { display:inline-flex; align-items:center; gap:8px; color:#28d7ff; font-weight:800; letter-spacing:.18em; font-size:.7rem; }
 .live-badge .live-dot { width:8px; height:8px; background:#ff526e; border-radius:50%; box-shadow:0 0 10px #ff526e; }
@@ -410,7 +428,7 @@ body:not(.reference-home) .contact-grid .form-card { margin:0; }
 .live-countdown-wrap .local-time-line strong { color:#e6f8ff; }
 .live-cta-row { display:flex; justify-content:center; gap:12px; margin-top:20px; flex-wrap:wrap; }
 .live-cta-row .btn { padding:11px 26px; font-size:.85rem; }
-@media (max-width:733px) { .live-countdown-section { width:100%; box-sizing:border-box; padding:22px 12px 44px; } }
+@media (max-width:733px) { .live-countdown-section { box-sizing:border-box; padding:22px 12px 44px; } }
 @media (max-width:520px) {
   .live-countdown-wrap { padding:22px 12px 20px; }
   .live-countdown-wrap .neon-countdown { gap:4px; }
