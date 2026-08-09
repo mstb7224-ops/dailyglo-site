@@ -12,9 +12,11 @@
 
   function showStatus(element, message, type) {
     if (!element) return;
+    var statusType = type || 'info';
     element.textContent = message;
-    element.className = 'status-msg show ' + (type || 'info');
-    element.setAttribute('role', 'status');
+    element.className = 'status-msg show ' + statusType;
+    element.setAttribute('role', statusType === 'error' ? 'alert' : 'status');
+    element.setAttribute('aria-live', statusType === 'error' ? 'assertive' : 'polite');
   }
 
   function setButtonState(button, busy, label) {
@@ -23,7 +25,17 @@
       button.dataset.defaultLabel = button.textContent.trim();
     }
     button.disabled = busy;
-    button.textContent = busy ? label : button.dataset.defaultLabel;
+    button.classList.toggle('is-loading', busy);
+    button.setAttribute('aria-busy', busy ? 'true' : 'false');
+    if (busy) {
+      button.innerHTML = '<span class="button-spinner" aria-hidden="true"></span><span>' + label + '</span>';
+    } else {
+      button.textContent = button.dataset.defaultLabel;
+    }
+  }
+
+  function showValidationError(form) {
+    showStatus(getStatusElement(form), 'Please complete all required fields before continuing.', 'error');
   }
 
   function getStatusElement(form) {
@@ -78,7 +90,11 @@
     if (token) request.headers.Authorization = 'Bearer ' + token;
     return fetch(API_BASE + path, request).then(function (response) {
       return response.json().catch(function () { return {}; }).then(function (body) {
-        if (!response.ok) throw new Error(body.error || 'The request could not be completed.');
+        if (!response.ok) {
+          var apiError = new Error(body.error || 'The request could not be completed.');
+          apiError.status = response.status;
+          throw apiError;
+        }
         return body;
       });
     });
@@ -94,7 +110,23 @@
   function handleApiError(form, error) {
     var button = form && form.querySelector('button[type="submit"]');
     setButtonState(button, false);
-    showStatus(getStatusElement(form), error && error.message ? error.message : 'Unable to connect to DailyGlo securely.', 'error');
+    var message = 'Something went wrong. Please try again.';
+    if (error && error.status === 401) {
+      message = 'The email/mobile or password is incorrect. Please check your details and try again.';
+    } else if (error && error.status === 409) {
+      message = 'An account with this email or mobile number already exists. Try logging in instead.';
+    } else if (error && error.status === 413) {
+      message = 'The uploaded file is too large. Please choose an image smaller than 5 MB.';
+    } else if (error && error.status === 415) {
+      message = 'This file type is not supported. Please upload a JPG, PNG, or WebP image.';
+    } else if (error && error.status === 429) {
+      message = 'Too many attempts. Please wait a moment and try again.';
+    } else if (error && error.name === 'TypeError') {
+      message = 'We could not reach DailyGlo right now. Check your internet connection and try again.';
+    } else if (error && error.message) {
+      message = error.message;
+    }
+    showStatus(getStatusElement(form), message, 'error');
   }
 
   window.toggleMobileMenu = function () {
@@ -160,6 +192,7 @@
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       if (!form.checkValidity()) {
+        showValidationError(form);
         form.reportValidity();
         return;
       }
@@ -185,6 +218,7 @@
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       if (!form.checkValidity()) {
+        showValidationError(form);
         form.reportValidity();
         return;
       }
