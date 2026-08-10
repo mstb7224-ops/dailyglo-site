@@ -1,78 +1,368 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="DailyGlo lottery membership, secure payment review, and public draw updates.">
-  <title>DailyGlo | Lottery Agency</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DailyGlo lottery membership, secure payment review, and public draw updates.">
+    <title>DailyGlo Lottery Agency</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
-<body class="exact-reference-home">
-  <main class="reference-poster-page">
-    <div class="reference-poster-frame" role="img" aria-label="DailyGlo Lottery Agency homepage preview showing the next draw on 16 August 2026, membership workflow, recent winners, trust indicators, and account actions.">
-      <img src="images/dailyglo_home_reference.webp" alt="DailyGlo Lottery Agency homepage reference artwork" class="reference-poster-image">
-      <nav class="reference-hotspots" aria-label="DailyGlo homepage navigation">
-        <a class="poster-hotspot poster-home" href="index.html" aria-label="Home"></a>
-        <a class="poster-hotspot poster-results" href="#results" aria-label="Results"></a>
-        <a class="poster-hotspot poster-about" href="pages/faq.html" aria-label="About Us"></a>
-        <a class="poster-hotspot poster-how" href="#how-it-works" aria-label="How to Play"></a>
-        <a class="poster-hotspot poster-contact" href="pages/contact.html" aria-label="Contact"></a>
-        <a class="poster-hotspot poster-login" href="pages/login.html" aria-label="Login"></a>
-        <a class="poster-hotspot poster-register" href="pages/register.html" aria-label="Register"></a>
-        <a class="poster-hotspot poster-play" href="pages/register.html" aria-label="Play now and win big"></a>
-        <a class="poster-hotspot poster-view-all" href="#results" aria-label="View all recent winners"></a>
-      </nav>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="logo-text">
+                <h1>DailyGlo</h1>
+                <span>Lottery Agency</span>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="pages/faq.html">FAQ</a>
+            <a href="pages/contact.html">Contact</a>
+        </nav>
+        <div class="auth-buttons">
+            <a href="pages/login.html" class="btn btn-login">
+                <i class="far fa-user"></i> LOGIN
+            </a>
+            <a href="pages/register.html" class="btn btn-register">
+                <i class="fas fa-user-plus"></i> REGISTER
+            </a>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Home</a>
+        <a href="pages/faq.html">FAQ</a>
+        <a href="pages/contact.html">Contact</a>
+        <div class="mobile-auth">
+            <a href="pages/login.html" class="btn btn-login">Login</a>
+            <a href="pages/register.html" class="btn btn-register">Register</a>
+        </div>
     </div>
 
-    <section class="reference-accessible-content" id="how-it-works" aria-label="DailyGlo homepage information">
-      <h1>DailyGlo Lottery Agency</h1>
-      <p>Next draw: 16 August 2026 at 12:00 PM Saudi Arabia time. Your local draw time is shown automatically.</p>
-      <div class="reference-live-countdown" data-countdown="7200" aria-live="polite">
-        <span><strong data-countdown-days>00</strong> Days</span>
-        <span><strong data-countdown-hours>00</strong> Hours</span>
-        <span><strong data-countdown-minutes>00</strong> Minutes</span>
-        <span><strong data-countdown-seconds>00</strong> Seconds</span>
-      </div>
-      <p>Your local time: <strong data-local-draw-time>Loading…</strong> <span data-local-timezone>Loading timezone…</span></p>
-      <h2>How DailyGlo Works</h2>
-      <ol>
-        <li>Register and upload your ID.</li>
-        <li>Receive your unique member identification.</li>
-        <li>Submit payment proof for review.</li>
-        <li>Get approved and access member features.</li>
-      </ol>
-      <h2 id="results">Recent Winners</h2>
-      <ul>
-        <li>Ahmed S. — Riyadh, Saudi Arabia — SAR 25,000</li>
-        <li>Imran H. — Jeddah, Saudi Arabia — SAR 15,500</li>
-        <li>Khalid M. — Dammam, Saudi Arabia — SAR 10,000</li>
-        <li>Abdul R. — Dubai, UAE — SAR 8,200</li>
-      </ul>
-      <p>Trust indicators: 100% trusted, secure payment, big winnings, and 24/7 support.</p>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="stars"></div>
+        <div class="city-left"></div>
+        <div class="city-right"></div>
+        <div class="highway-lights"></div>
+        <div class="fireworks">
+            <div class="firework"></div>
+            <div class="firework"></div>
+            <div class="firework"></div>
+            <div class="firework"></div>
+            <div class="firework"></div>
+            <div class="firework-ray"></div>
+            <div class="firework-ray"></div>
+            <div class="firework-ray"></div>
+            <div class="firework-ray"></div>
+        </div>
+
+        <div class="hero-content">
+            <div class="next-draw-badge">
+                <i class="fas fa-star" style="font-size:10px;"></i>
+                NEXT DRAW
+                <i class="fas fa-star" style="font-size:10px;"></i>
+            </div>
+            <h1 class="draw-date">
+                <span class="highlight">16</span> AUGUST <span class="highlight">2026</span>
+            </h1>
+            <div class="draw-time">
+                <i class="far fa-clock"></i>
+                12:00 PM • SAUDI ARABIA TIME
+            </div>
+
+            <!-- COUNTDOWN -->
+            <div class="countdown-container">
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="days">00</span>
+                        </div>
+                        <div class="countdown-label">Days</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="hours">00</span>
+                        </div>
+                        <div class="countdown-label">Hours</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="minutes">00</span>
+                        </div>
+                        <div class="countdown-label">Minutes</div>
+                    </div>
+                    <div class="countdown-separator">:</div>
+                    <div class="countdown-item">
+                        <div class="countdown-box">
+                            <span class="countdown-number" id="seconds">00</span>
+                        </div>
+                        <div class="countdown-label">Seconds</div>
+                    </div>
+                </div>
+                <div class="countdown-dots">
+                    <div class="dot-line">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="dot-line">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+                <div class="countdown-title">Draw Countdown</div>
+            </div>
+        </div>
     </section>
 
-    <!-- Visible live countdown: updates every second in real time -->
-    <div class="live-countdown-section">
-      <div class="live-countdown-wrap">
-        <div class="live-badge"><span class="live-dot"></span>LIVE COUNTDOWN</div>
-        <div class="live-date-line">Next Draw · <strong>16 August 2026 · 12:00 PM</strong> <span class="local-zone">Saudi Arabia Time</span></div>
-        <div class="neon-countdown" data-countdown="live" aria-live="polite">
-          <span><strong data-countdown-days>00</strong><small>Days</small></span><b>:</b>
-          <span><strong data-countdown-hours>00</strong><small>Hours</small></span><b>:</b>
-          <span><strong data-countdown-minutes>00</strong><small>Minutes</small></span><b>:</b>
-          <span><strong data-countdown-seconds>00</strong><small>Seconds</small></span>
+    <!-- FEATURES BAR -->
+    <section class="features-bar">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-text">
+                <h3>100% TRUSTED</h3>
+                <p>Trusted by thousands<br>of members worldwide.</p>
+            </div>
         </div>
-        <div class="local-time-line">Your local draw time: <strong data-local-draw-time>Loading…</strong><span data-local-timezone></span></div>
-        <div class="live-cta-row">
-          <a href="pages/register.html" class="btn btn-nav btn-nav-solid">Register Now</a>
-          <a href="pages/login.html" class="btn btn-nav btn-nav-outline">Login</a>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="feature-text">
+                <h3>SECURE PAYMENT</h3>
+                <p>Your payments are safe<br>and encrypted.</p>
+            </div>
         </div>
-      </div>
-    </div>
-  </main>
-  <script src="js/app.js"></script>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="feature-text">
+                <h3>BIG WINNINGS</h3>
+                <p>Join and win amazing<br>jackpots.</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <div class="feature-text">
+                <h3>24/7 SUPPORT</h3>
+                <p>We are here to help<br>you anytime.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- INFO SECTION -->
+    <section class="info-section">
+        <!-- HOW IT WORKS -->
+        <div class="info-card">
+            <h2>HOW DAILYGLO WORK</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h4>Register</h4>
+                    <p>Fill in your details and upload your Iqama</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h4>Get Member ID</h4>
+                    <p>Receive your unique Member ID instantly by email</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4>Submit Payment</h4>
+                    <p>Log in and upload your payment screenshot</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Get Approved</h4>
+                    <p>Our team verifies and approves within 24 hours</p>
+                </div>
+            </div>
+            <a href="pages/register.html" class="play-btn">
+                PLAY NOW &amp; WIN BIG
+                <i class="fas fa-trophy"></i>
+            </a>
+        </div>
+
+        <!-- RECENT WINNERS -->
+        <div class="info-card">
+            <div class="winners-header">
+                <h2>RECENT WINNERS</h2>
+                <a href="pages/faq.html">View All</a>
+            </div>
+            <div class="winner-item">
+                <div class="winner-avatar">A</div>
+                <div class="winner-info">
+                    <h4>Ahmed S.</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Riyadh, Saudi Arabia</p>
+                </div>
+                <div class="winner-amount">
+                    <span>Winnings</span>
+                    <h4>SAR 25,000</h4>
+                </div>
+            </div>
+            <div class="winner-item">
+                <div class="winner-avatar">I</div>
+                <div class="winner-info">
+                    <h4>Imran H.</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Jeddah, Saudi Arabia</p>
+                </div>
+                <div class="winner-amount">
+                    <span>Winnings</span>
+                    <h4>SAR 15,500</h4>
+                </div>
+            </div>
+            <div class="winner-item">
+                <div class="winner-avatar">K</div>
+                <div class="winner-info">
+                    <h4>Khalid M.</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Dammam, Saudi Arabia</p>
+                </div>
+                <div class="winner-amount">
+                    <span>Winnings</span>
+                    <h4>SAR 10,000</h4>
+                </div>
+            </div>
+            <div class="winner-item">
+                <div class="winner-avatar">A</div>
+                <div class="winner-info">
+                    <h4>Abdul R.</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Dubai, UAE</p>
+                </div>
+                <div class="winner-amount">
+                    <span>Winnings</span>
+                    <h4>SAR 8,200</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS BAR -->
+    <section class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-text">
+                <h3>25,346+</h3>
+                <p>Total Members</p>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-ticket-alt"></i>
+            </div>
+            <div class="stat-text">
+                <h3>12,784+</h3>
+                <p>Tickets Played</p>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="stat-text">
+                <h3>8,932+</h3>
+                <p>Winners</p>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-text">
+                <h3>SAR 2.5M+</h3>
+                <p>Total Paid Out</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-left">
+            <div class="footer-logo">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="footer-text">
+                <h3>DailyGlo</h3>
+                <span>Lottery Agency</span>
+            </div>
+        </div>
+        <div class="footer-center">
+            © 2026 DailyGlo Lottery Agency. All Rights Reserved.
+        </div>
+        <div class="footer-right">
+            <span>FOLLOW US</span>
+            <a href="https://www.facebook.com/" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://t.me/" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://wa.me/" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.youtube.com/" class="social-icon" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+        </div>
+    </footer>
+
+    <script>
+        // COUNTDOWN TIMER — 16 Aug 2026, 12:00 PM Saudi time (UTC+3) = 09:00:00 UTC
+        function updateCountdown() {
+            const drawDate = new Date('2026-08-16T12:00:00+03:00');
+            const now = new Date();
+            const diff = drawDate - now;
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            } else {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+            }
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // MOBILE MENU
+        var menuBtn = document.getElementById('mobileMenuBtn');
+        var mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', function () {
+                mobileMenu.classList.toggle('open');
+            });
+        }
+    </script>
 </body>
 </html>
