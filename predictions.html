@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winning Predictions | Master Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center p-6 bg-slate-800 border-b border-slate-700 shadow-xl">
+        <h1 class="text-2xl font-bold text-blue-400 tracking-tight">MASTER ENGINE</h1>
+        <a href="dashboard.html" class="text-sm font-medium text-slate-400 hover:text-white transition-all">← Back to Dashboard</a>
+    </nav>
+
+    <!-- Content -->
+    <div class="max-w-4xl mx-auto mt-12 px-6 text-center">
+        <h2 class="text-4xl font-extrabold mb-2">Winning Predictions ⚡</h2>
+        <p class="text-slate-400 mb-10">শুধুমাত্র প্রিমিয়াম মেম্বারদের জন্য নিখুঁত প্রেডিকশন।</p>
+
+        <!-- Predictions Container -->
+        <div id="predictionsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Predictions will be injected here by JS -->
+            <div id="loader" class="col-span-full text-blue-400 animate-pulse text-xl font-medium">Fetching latest data...</div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-client.js"></script>
+    <script src="js/access.js"></script> <!-- এই ফাইলটি ইউজারকে ভেরিফাই করবে -->
+    
+    <script>
+        async function loadPredictions() {
+            const listContainer = document.getElementById('predictionsList');
+            const loader = document.getElementById('loader');
+
+            try {
+                // ১. predictions টেবিল থেকে ডাটা আনা (শুধুমাত্র যেগুলো published = true)
+                const { data: predictions, error } = await supabase
+                    .from('predictions')
+                    .select('*')
+                    .eq('is_published', true)
+                    .order('round_number', { ascending: false });
+
+                if (error) throw error;
+
+                // লোডার রিমুভ করা
+                listContainer.innerHTML = '';
+
+                if (predictions.length === 0) {
+                    listContainer.innerHTML = `<p class="col-span-full text-slate-500 text-lg">এখনো কোনো প্রেডিকশন পাবলিশ করা হয়নি।</p>`;
+                    return;
+                }
+
+                // ২. ডাটা ডিসপ্লে করা
+                predictions.forEach(pred => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-lg hover:border-blue-500 transition-all transform hover:-translate-y-2";
+                    card.innerHTML = `
+                        <p class="text-slate-400 text-xs uppercase font-bold tracking-widest mb-2">Round #${pred.round_number}</p>
+                        <h3 class="text-5xl font-black text-blue-400">${pred.winning_number}</h3>
+                        <p class="text-slate-500 text-xs mt-4">Published on: ${new Date(pred.created_at).toLocaleDateString()}</p>
+                    `;
+                    listContainer.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                listContainer.innerHTML = `<p class="col-span-full text-red-400">Error loading predictions!</p>`;
+            }
+        }
+
+        // পেজ লোড হলে ডাটা ফেচ করা
+        window.addEventListener('DOMContentLoaded', loadPredictions);
+    </script>
+</body>
+</html>
