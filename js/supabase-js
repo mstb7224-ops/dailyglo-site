@@ -1,0 +1,52 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient('xewxigpmvuxkuqtxhxha.supabase.co', 'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h')
+
+async function handleRegistration() {
+    const fileInput = document.getElementById('iqama_photo');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("ছবি সিলেক্ট কর, গাধা! 💀");
+        return;
+    }
+
+    try {
+        // ১. ছবির জন্য একটা ইউনিক নাম তৈরি করা (যাতে ওভাররাইট না হয়)
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `public/${fileName}`;
+
+        // ২. Supabase Storage-এ ছবি আপলোড করা
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('iqama_photos') // তোর বাকেটের নাম
+            .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        // ৩. আপলোড করা ছবির Public URL নেওয়া
+        const { data: urlData } = supabase.storage
+            .from('iqama_photos')
+            .getPublicUrl(filePath);
+
+        const publicImageUrl = urlData.publicUrl;
+
+        // ৪. এবার এই URL-টি তোর ডাটাবেসে (Table) সেভ করা
+        const { error: dbError } = await supabase
+            .from('users') // তোর টেবিলের নাম
+            .insert([
+                { 
+                    username: 'user_name', 
+                    iqama_url: publicImageUrl // ছবি সেভ হবে না, ছবির লিঙ্ক সেভ হবে
+                }
+            ]);
+
+        if (dbError) throw dbError;
+
+        alert("বুম! ছবি এবং ডাটা দুটোই সেভ হয়ে গেছে। ⚡");
+
+    } catch (error) {
+        console.error("Error:", error.message);
+        alert("সিস্টেম ক্র্যাশ করেছে: " + error.message);
+    }
+}
