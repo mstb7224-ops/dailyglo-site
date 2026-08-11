@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control Center | Master Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen p-4">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10 p-6 bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl">
+            <h1 class="text-3xl font-black text-blue-400 tracking-tighter">MASTER ENGINE <span class="text-white text-sm font-normal ml-2 px-2 py-1 bg-blue-600 rounded">ADMIN</span></h1>
+            <div id="adminStatus" class="text-sm text-slate-400 animate-pulse">Checking Admin Auth...</div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- SECTION 1: PREDICTION MANAGER (Control the Game) -->
+            <div class="lg:col-span-1 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                <h2 class="text-xl font-bold mb-6 flex items-center">
+                    <span class="mr-2">🎯</span> Post Prediction
+                </h2>
+                <form id="predForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Round Number</label>
+                        <input type="number" id="roundNum" required class="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Winning Number</label>
+                        <input type="text" id="winNum" required class="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none transition-all">
+                    </div>
+                    <div class="flex items-center space-x-2 py-2">
+                        <input type="checkbox" id="isPublished" class="w-4 h-4">
+                        <label for="isPublished" class="text-sm text-slate-300">Publish Immediately</label>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-bold transition-all active:scale-95">Update Results</button>
+                </form>
+            </div>
+
+            <!-- SECTION 2: PAYMENT VERIFIER (Manage the Money) -->
+            <div class="lg:col-span-2 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                <h2 class="text-xl font-bold mb-6 flex items-center">
+                    <span class="mr-2">💰</span> Pending Payments
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-slate-400 text-xs uppercase border-b border-slate-700">
+                                <th class="pb-3">User ID</th>
+                                <th class="pb-3">TxID</th>
+                                <th class="pb-3">Amount</th>
+                                <th class="pb-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentTableBody" class="text-sm divide-y divide-slate-700">
+                            <!-- Payments will be injected here -->
+                        </tbody>
+                    </table>
+                    <div id="noPayments" class="hidden text-center py-10 text-slate-500">No pending payments found.</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/supabase-client.js"></script>
+    <script>
+        // --- Prediction Logic ---
+        const predForm = document.getElementById('predForm');
+        predForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const round = document.getElementById('roundNum').value;
+            const win = document.getElementById('winNum').value;
+            const pub = document.getElementById('isPublished').checked;
+
+            const { error } = await supabase
+                .from('predictions')
+                .upsert({ round_number: round, winning_number: win, is_published: pub });
+
+            if (error) alert("Error: " + error.message);
+            else {
+                alert("Prediction Updated Successfully!");
+                predForm.reset();
+            }
+        });
+
+        // --- Payment Verification Logic ---
+        async function loadPendingPayments() {
+            const tbody = document.getElementById('paymentTableBody');
+            const noPayments = document.getElementById('noPayments');
+            
+            const { data, error } = await supabase
+                .from('payments')
+                .select('*')
+                .eq('status', 'unverified')
+                .order('created_at', { ascending: false });
+
+            if (error) return console.error(error);
+
+            tbody.innerHTML = '';
+            if (data.length === 0) {
+                noPayments.classList.remove('hidden');
+                return;
+            }
+            noPayments.classList.add('hidden');
+
+            data.forEach(pay => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="py-4 text-slate-400 text-xs">${pay.user_id.substring(0,8)}...</td>
+                    <td class="py-4 font-mono">${pay.tx_id}</td>
+                    <td class="py-4 font-bold">${pay.amount}</td>
+                    <td class="py-4">
+                        <button onclick="verifyPayment('${pay.id}')" class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded text-xs font-bold transition-all">Verify</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function verifyPayment(id) {
+            const { error } = await supabase
+                .from('payments')
+                .update({ status: 'verified' })
+                .eq('id', id);
+
+            if (error) alert("Error: " + error.message);
+            else {
+                alert("User Verified and Upgraded to PAID!");
+                loadPendingPayments();
+            }
+        }
+
+        // --- Initial Setup ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                document.body.innerHTML = `<div class="flex items-center justify-center h-screen text-2xl font-bold">Access Denied: Please Login First!</div>`;
+            } else {
+                document.getElementById('adminStatus').innerText = "Admin Online: " + user.email;
+                loadPendingPayments();
+            }
+        });
+    </script>
+</body>
+</html>
