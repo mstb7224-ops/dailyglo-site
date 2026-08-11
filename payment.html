@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Verification | Master Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen">
+
+    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-blue-400">Payment Verification</h1>
+            <p class="text-slate-400 mt-2">টাকা পাঠানোর পর নিচের ডিটেইলস সাবমিট কর।</p>
+        </div>
+
+        <!-- Payment Instructions -->
+        <div class="bg-slate-700 p-4 rounded-lg mb-6 border-l-4 border-blue-500">
+            <p class="text-sm font-semibold text-blue-300">বিকাশ/নগদ নম্বর: <span class="text-white text-lg block">01XXXXXXXXX</span></p>
+            <p class="text-xs text-slate-400 mt-1">* টাকা পাঠানোর পর Transaction ID সংগ্রহ কর।</p>
+        </div>
+
+        <form id="paymentForm" class="space-y-5">
+            <!-- Transaction ID Input -->
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Transaction ID</label>
+                <input type="text" id="txId" required 
+                    class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" 
+                    placeholder="Enter TxID here...">
+            </div>
+
+            <!-- Amount Input -->
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1">Amount Paid</label>
+                <input type="number" id="amount" required 
+                    class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" 
+                    placeholder="Enter amount (e.g. 500)">
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" 
+                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95 shadow-lg">
+                Submit Payment
+            </button>
+        </form>
+
+        <div id="statusMsg" class="mt-4 text-center text-sm hidden"></div>
+    </div>
+
+    <!-- Script Section -->
+    <script src="js/supabase-client.js"></script> 
+    <script>
+        const paymentForm = document.getElementById('paymentForm');
+        const statusMsg = document.getElementById('statusMsg');
+        const submitBtn = document.getElementById('submitBtn');
+
+        paymentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // UI Loading state
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Processing...";
+            statusMsg.classList.remove('hidden');
+            statusMsg.innerText = "সাবমিট হচ্ছে, দয়া করে অপেক্ষা কর...";
+            statusMsg.className = "mt-4 text-center text-sm text-blue-400";
+
+            const txId = document.getElementById('txId').value;
+            const amount = document.getElementById('amount').value;
+
+            try {
+                // ১. বর্তমান লগইন করা ইউজারের আইডি নেওয়া
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (!user) throw new Error("ইউজার লগইন করা নেই!");
+
+                // ২. payments টেবিলে ডাটা পুশ করা
+                const { error } = await supabase
+                    .from('payments')
+                    .insert([
+                        { 
+                            user_id: user.id, 
+                            tx_id: txId, 
+                            amount: amount, 
+                            status: 'unverified' 
+                        }
+                    ]);
+
+                if (error) throw error;
+
+                // Success State
+                statusMsg.innerText = "✅ পেমেন্ট সাবমিট হয়েছে! অ্যাডমিন ভেরিফাই করলে অ্যাক্সেস পাবে।";
+                statusMsg.className = "mt-4 text-center text-sm text-green-400";
+                paymentForm.reset();
+
+            } catch (err) {
+                console.error(err);
+                statusMsg.innerText = "❌ এরর: " + err.message;
+                statusMsg.className = "mt-4 text-center text-sm text-red-400";
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Submit Payment";
+            }
+        });
+    </script>
+</body>
+</html>
