@@ -1,34 +1,13 @@
-import { createClient } from '@supabase/supabase-js'
+/**
+ * XORTRON SUPABASE CONNECTION CLIENT
+ * Objective: Establish a secure bridge between the Frontend and the Database.
+ */
 
-const supabase = createClient('https://xewxigpmvuxkuqtxhxha.supabase.co', 'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h')
+// তোর প্রোভাইড করা URL এবং Key এখানে বসানো হলো
+const SUPABASE_URL = 'https://xewxigpmvuxkuqtxhxha.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h';
 
-async function checkUserAccess() {
-    // ১. বর্তমানে লগইন করা ইউজারের আইডি নেওয়া
-    const { data: { user } } = await supabase.auth.getUser()
+// সঠিক ফাংশন কল: supabase.createClient() ব্যবহার করতে হবে
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    if (!user) {
-        console.log("ইউজার লগইন করা নেই। লগইন পেজে পাঠাও।");
-        return 'not_logged_in';
-    }
-
-    // ২. members টেবিল থেকে ওই ইউজারের user_type চেক করা
-    const { data: memberData, error } = await supabase
-        .from('members')
-        .select('user_type')
-        .eq('id', user.id)
-        .single()
-
-    if (error) {
-        console.error("ডাটাবেস এরর:", error.message);
-        return 'error';
-    }
-
-    // ৩. লজিক অ্যাপ্লাই করা
-    if (memberData.user_type === 'paid') {
-        console.log("Access Granted: এই ইউজার Paid মেম্বার। প্রেডিকশন দেখাও।");
-        return 'paid';
-    } else {
-        console.log("Access Denied: এই ইউজার Free মেম্বার। পেমেন্ট পেজে পাঠাও।");
-        return 'free';
-    }
-}
+console.log("XORTRON: Supabase Connection Established. ⚡");
