@@ -5,6 +5,157 @@
   'use strict';
 
   var MAX_FILE_SIZE = 5 * 1024 * 1024;
+  var SUPABASE_URL = window.DAILYGLO_SUPABASE_URL || 'https://xewxigpmvuxkuqtxhxha.supabase.co';
+  var SUPABASE_ANON_KEY = window.DAILYGLO_SUPABASE_ANON_KEY || 'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h';
+  var SUPABASE_BUCKET = window.DAILYGLO_IQAMA_BUCKET || 'iqama_documents';
+  var supabaseClientPromise = null;
+
+  function loadExternalScript(src) {
+    return new Promise(function (resolve, reject) {
+      var existing = document.querySelector('script[data-dailyglo-supabase-sdk]');
+      if (existing) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', reject, { once: true });
+        if (window.supabase && typeof window.supabase.createClient === 'function') resolve();
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.dataset.dailygloSupabaseSdk = 'true';
+      script.onload = resolve;
+      script.onerror = function () { reject(new Error('Supabase SDK could not be loaded.')); };
+      document.head.appendChild(script);
+    });
+  }
+
+  function getSupabaseClient() {
+    if (window.__DAILYGLO_SUPABASE_CLIENT) {
+      return Promise.resolve(window.__DAILYGLO_SUPABASE_CLIENT);
+    }
+    if (!supabaseClientPromise) {
+      var sdkReady = window.supabase && typeof window.supabase.createClient === 'function'
+        ? Promise.resolve()
+        : loadExternalScript('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+      supabaseClientPromise = sdkReady.then(function () {
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+          throw new Error('Supabase SDK is unavailable.');
+        }
+        window.__DAILYGLO_SUPABASE_CLIENT = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        return window.__DAILYGLO_SUPABASE_CLIENT;
+      });
+    }
+    return supabaseClientPromise;
+  }
+
+  function getFileExtension(file) {
+    var typeMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+    if (typeMap[file.type]) return typeMap[file.type];
+    var match = file.name.toLowerCase().match(/\.([a-z0-9]+)$/);
+    return match ? match[1] : 'jpg';
+  }
+
+  function validateIqamaFile(input, statusElement) {
+    if (!validateFile(input, statusElement, 'Iqama image')) return false;
+    var file = input.files[0];
+    var allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (allowedTypes.indexOf(file.type) === -1) {
+      showStatus(statusElement, 'Please upload a JPG, PNG, or WebP image. HEIC images should be converted before upload.', 'error');
+      input.value = '';
+      return false;
+    }
+    return true;
+  }
+
+  function supabaseErrorMessage(error) {
+    var message = error && (error.message || error.error_description || error.error) || 'The request could not be completed.';
+    var lower = String(message).toLowerCase();
+    if (lower.indexOf('bucket') !== -1 && (lower.indexOf('not found') !== -1 || lower.indexOf('does not exist') !== -1)) {
+      return 'Supabase Storage bucket "' + SUPABASE_BUCKET + '" was not found. Create the bucket first.';
+    }
+    if (lower.indexOf('row-level security') !== -1 || lower.indexOf('not authorized') !== -1 || lower.indexOf('permission') !== -1 || lower.indexOf('policy') !== -1) {
+      return 'Supabase rejected the request because the Storage or database RLS policy is not configured for this user.';
+    }
+    if (lower.indexOf('email not confirmed') !== -1 || lower.indexOf('confirm your email') !== -1) {
+      return 'Your account was created, but email confirmation is required before the Iqama can be uploaded. Confirm your email and try again.';
+    }
+    if (lower.indexOf('already registered') !== -1 || lower.indexOf('already exists') !== -1) {
+      return 'An account with this email already exists. Please log in instead.';
+    }
+    return message;
+  }
+
+  async function registerWithSupabase(form, file) {
+    var client = await getSupabaseClient();
+    var values = {
+      full_name: byId('fullName').value.trim(),
+      email: byId('email').value.trim().toLowerCase(),
+      mobile: byId('mobile').value.trim(),
+      city: byId('city').value.trim(),
+      country: byId('country').value,
+      password: byId('password').value
+    };
+
+    var signUpResult = await client.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: {
+          full_name: values.full_name,
+          mobile: values.mobile,
+          city: values.city,
+          country: values.country
+        }
+      }
+    });
+    if (signUpResult.error) throw signUpResult.error;
+    if (!signUpResult.data || !signUpResult.data.user) throw new Error('Supabase did not return a user account.');
+    if (!signUpResult.data.session) {
+      throw new Error('Account created, but Supabase email confirmation is enabled. Confirm the email before uploading the Iqama, or disable email confirmation in Supabase Auth settings.');
+    }
+
+    var user = signUpResult.data.user;
+    var uploadedPath = '';
+    try {
+      var extension = getFileExtension(file);
+      var randomId = window.crypto && typeof window.crypto.randomUUID === 'function'
+        ? window.crypto.randomUUID()
+        : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+      uploadedPath = 'iqama/' + user.id + '/' + randomId + '.' + extension;
+
+      var uploadResult = await client.storage.from(SUPABASE_BUCKET).upload(uploadedPath, file, {
+        cacheControl: '3600',
+        contentType: file.type,
+        upsert: false
+      });
+      if (uploadResult.error) throw uploadResult.error;
+
+      var memberResult = await client.from('members').upsert([{
+        email: values.email,
+        user_type: 'free'
+      }], { onConflict: 'email' });
+      if (memberResult.error) throw memberResult.error;
+
+      var profileResult = await client.auth.updateUser({
+        data: {
+          full_name: values.full_name,
+          mobile: values.mobile,
+          city: values.city,
+          country: values.country,
+          iqama_path: uploadedPath,
+          iqama_uploaded_at: new Date().toISOString()
+        }
+      });
+      if (profileResult.error) throw profileResult.error;
+    } catch (error) {
+      if (uploadedPath) {
+        await client.storage.from(SUPABASE_BUCKET).remove([uploadedPath]).catch(function () {});
+      }
+      throw error;
+    }
+
+    return { user: user, iqamaPath: uploadedPath };
+  }
 
   function byId(id) {
     return document.getElementById(id);
@@ -188,7 +339,7 @@
     var form = byId('regForm');
     if (!form) return;
     var status = getStatusElement(form);
-    bindFileInput('iqamaFile', null, '.file-text strong', status, 'Iqama image');
+    bindFileInput('iqamaFile', 'filePreview', '.file-text strong', status, 'Iqama image');
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       if (!form.checkValidity()) {
@@ -196,19 +347,22 @@
         form.reportValidity();
         return;
       }
-      if (!validateFile(byId('iqamaFile'), status, 'Iqama image')) return;
+      var input = byId('iqamaFile');
+      if (!validateIqamaFile(input, status)) return;
       var button = byId('submitBtn');
-      setButtonState(button, true, 'Submitting...');
-      var data = new FormData();
-      ['fullName', 'email', 'mobile', 'city', 'country', 'password'].forEach(function (id) {
-        data.append(id, byId(id).value.trim());
-      });
-      data.append('iqama', byId('iqamaFile').files[0]);
-      apiFetch('/api/auth/register', { method: 'POST', body: data }).then(function (result) {
+      setButtonState(button, true, 'Uploading...');
+      registerWithSupabase(form, input.files[0]).then(function () {
         setButtonState(button, false);
-        showStatus(status, 'Registration received. Your Member ID is ' + result.member.memberCode + '. Please log in to submit payment.', 'success');
+        showStatus(status, 'Registration and Iqama upload completed successfully. You can now log in.', 'success');
         form.reset();
-      }).catch(function (error) { handleApiError(form, error); });
+        var fileText = form.querySelector('.file-text strong');
+        if (fileText) fileText.textContent = 'Click to upload Iqama';
+        var preview = byId('filePreview');
+        if (preview) preview.style.display = 'none';
+      }).catch(function (error) {
+        setButtonState(button, false);
+        showStatus(status, supabaseErrorMessage(error), 'error');
+      });
     });
   }
 
@@ -223,17 +377,22 @@
         return;
       }
       var button = byId('submitBtn');
+      var status = getStatusElement(form);
       setButtonState(button, true, 'Signing in...');
-      apiFetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: byId('loginId').value.trim(), password: byId('password').value })
+      getSupabaseClient().then(function (client) {
+        return client.auth.signInWithPassword({
+          email: byId('loginId').value.trim(),
+          password: byId('password').value
+        });
       }).then(function (result) {
+        if (result.error) throw result.error;
         setButtonState(button, false);
-        if (result.token) window.localStorage.setItem('dailyglo_member_token', result.token);
-        showStatus(getStatusElement(form), 'Login successful. Redirecting to payment...', 'success');
-        window.setTimeout(function () { window.location.href = 'payment.html'; }, 500);
-      }).catch(function (error) { handleApiError(form, error); });
+        showStatus(status, 'Login successful. Redirecting to payment...', 'success');
+        window.setTimeout(function () { window.location.href = '../payment.html'; }, 500);
+      }).catch(function (error) {
+        setButtonState(button, false);
+        showStatus(status, supabaseErrorMessage(error), 'error');
+      });
     });
   }
 
