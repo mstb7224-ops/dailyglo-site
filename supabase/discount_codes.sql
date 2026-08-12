@@ -16,6 +16,9 @@ create table if not exists public.discount_codes (
 alter table public.discount_codes enable row level security;
 
 drop policy if exists "Anyone can read active discount codes" on public.discount_codes;
+drop policy if exists "Admins can view all discount codes" on public.discount_codes;
+drop policy if exists "Admins can insert discount codes" on public.discount_codes;
+drop policy if exists "Admins can update discount codes" on public.discount_codes;
 create policy "Anyone can read active discount codes"
   on public.discount_codes
   for select
@@ -25,6 +28,25 @@ create policy "Anyone can read active discount codes"
     and (expires_at is null or expires_at > now())
     and (max_uses is null or used_count < max_uses)
   );
+
+create policy "Admins can view all discount codes"
+  on public.discount_codes
+  for select
+  to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+create policy "Admins can insert discount codes"
+  on public.discount_codes
+  for insert
+  to authenticated
+  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+create policy "Admins can update discount codes"
+  on public.discount_codes
+  for update
+  to authenticated
+  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
+  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 insert into public.discount_codes (code, percent_off, active)
 values

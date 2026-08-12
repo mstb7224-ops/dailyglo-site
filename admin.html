@@ -3,146 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Control Center | Master Engine</title>
+    <title>Admin Control Center | DailyGlo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-900 text-white font-sans min-h-screen p-4">
-
     <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-10 p-6 bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl">
-            <h1 class="text-3xl font-black text-blue-400 tracking-tighter">MASTER ENGINE <span class="text-white text-sm font-normal ml-2 px-2 py-1 bg-blue-600 rounded">ADMIN</span></h1>
-            <div id="adminStatus" class="text-sm text-slate-400 animate-pulse">Checking Admin Auth...</div>
+        <header class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8 p-6 bg-slate-800 rounded-2xl border border-slate-700 shadow-2xl">
+            <div><h1 class="text-3xl font-black text-blue-400 tracking-tighter">MASTER ENGINE <span class="text-white text-sm font-normal ml-2 px-2 py-1 bg-blue-600 rounded">ADMIN</span></h1><p class="mt-2 text-sm text-slate-400">Payments, predictions, and discount controls</p></div>
+            <div id="adminStatus" class="text-sm text-slate-400">Checking Admin Auth...</div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <!-- SECTION 1: PREDICTION MANAGER (Control the Game) -->
-            <div class="lg:col-span-1 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-                <h2 class="text-xl font-bold mb-6 flex items-center">
-                    <span class="mr-2">🎯</span> Post Prediction
-                </h2>
-                <form id="predForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Round Number</label>
-                        <input type="number" id="roundNum" required class="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Winning Number</label>
-                        <input type="text" id="winNum" required class="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none transition-all">
-                    </div>
-                    <div class="flex items-center space-x-2 py-2">
-                        <input type="checkbox" id="isPublished" class="w-4 h-4">
-                        <label for="isPublished" class="text-sm text-slate-300">Publish Immediately</label>
-                    </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-bold transition-all active:scale-95">Update Results</button>
+        <div id="accessDenied" class="hidden rounded-2xl border border-red-400/30 bg-red-400/10 p-8 text-center"><h2 class="text-2xl font-bold text-red-300">Admin access required</h2><p id="accessDeniedMessage" class="mt-3 text-slate-300">Sign in with an account that has the Supabase app_metadata role set to admin.</p></div>
+
+        <main id="adminContent" class="hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <section class="lg:col-span-1 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center"><span class="mr-2">🎯</span> Post Prediction</h2>
+                    <form id="predForm" class="space-y-4">
+                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1" for="roundNum">Round Number</label><input type="number" id="roundNum" required class="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none transition-all"></div>
+                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1" for="winNum">Winning Number</label><input type="text" id="winNum" required class="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-600 focus:border-blue-500 outline-none transition-all"></div>
+                        <div class="flex items-center space-x-2 py-2"><input type="checkbox" id="isPublished" class="w-4 h-4"><label for="isPublished" class="text-sm text-slate-300">Publish Immediately</label></div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-bold transition-all active:scale-95">Update Results</button>
+                    </form>
+                </section>
+
+                <section class="lg:col-span-2 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+                    <div class="flex items-center justify-between gap-4 mb-6"><h2 class="text-xl font-bold flex items-center"><span class="mr-2">💰</span> Pending Payments</h2><button id="refreshPayments" type="button" class="rounded-lg bg-slate-700 px-3 py-2 text-xs font-bold hover:bg-slate-600">Refresh</button></div>
+                    <div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-slate-400 text-xs uppercase border-b border-slate-700"><th class="pb-3">User ID</th><th class="pb-3">TxID</th><th class="pb-3">Amount</th><th class="pb-3">Action</th></tr></thead><tbody id="paymentTableBody" class="text-sm divide-y divide-slate-700"></tbody></table><div id="noPayments" class="hidden text-center py-10 text-slate-500">No pending payments found.</div></div>
+                </section>
+            </div>
+
+            <section class="bg-slate-800 p-6 rounded-2xl border border-amber-300/20 shadow-xl">
+                <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between mb-6"><div><h2 class="text-xl font-bold flex items-center"><span class="mr-2">🏷️</span> Discount Code Manager</h2><p class="mt-1 text-sm text-slate-400">Create percentage discounts for the 750 SAR membership fee and deactivate them whenever needed.</p></div><button id="refreshDiscounts" type="button" class="rounded-lg bg-slate-700 px-3 py-2 text-xs font-bold hover:bg-slate-600">Refresh Codes</button></div>
+                <form id="discountForm" class="grid grid-cols-1 gap-4 md:grid-cols-4 p-4 rounded-xl border border-slate-700 bg-slate-900/50">
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1" for="newDiscountCode">Code</label><div class="flex gap-2"><input type="text" id="newDiscountCode" maxlength="32" class="min-w-0 flex-1 rounded-lg bg-slate-900 border border-slate-600 px-3 py-2 uppercase" placeholder="DAILYGLO50"><button type="button" id="generateDiscountCode" class="rounded-lg bg-slate-700 px-3 text-xs font-bold hover:bg-slate-600" title="Generate a random code">Generate</button></div></div>
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1" for="discountPercent">Percent off</label><input type="number" id="discountPercent" min="1" max="100" step="1" required class="w-full rounded-lg bg-slate-900 border border-slate-600 px-3 py-2" placeholder="25"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1" for="discountMaxUses">Max uses <span class="normal-case font-normal">(optional)</span></label><input type="number" id="discountMaxUses" min="1" step="1" class="w-full rounded-lg bg-slate-900 border border-slate-600 px-3 py-2" placeholder="Unlimited"></div>
+                    <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1" for="discountExpires">Expires <span class="normal-case font-normal">(optional)</span></label><input type="datetime-local" id="discountExpires" class="w-full rounded-lg bg-slate-900 border border-slate-600 px-3 py-2"></div>
+                    <div class="md:col-span-4 flex flex-col gap-3 sm:flex-row sm:items-center"><button type="submit" class="rounded-lg bg-amber-500 px-5 py-3 font-bold text-slate-950 hover:bg-amber-400">Create Discount Code</button><p id="discountStatus" class="text-sm text-slate-400" role="status" aria-live="polite"></p></div>
                 </form>
-            </div>
-
-            <!-- SECTION 2: PAYMENT VERIFIER (Manage the Money) -->
-            <div class="lg:col-span-2 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-                <h2 class="text-xl font-bold mb-6 flex items-center">
-                    <span class="mr-2">💰</span> Pending Payments
-                </h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-slate-400 text-xs uppercase border-b border-slate-700">
-                                <th class="pb-3">User ID</th>
-                                <th class="pb-3">TxID</th>
-                                <th class="pb-3">Amount</th>
-                                <th class="pb-3">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="paymentTableBody" class="text-sm divide-y divide-slate-700">
-                            <!-- Payments will be injected here -->
-                        </tbody>
-                    </table>
-                    <div id="noPayments" class="hidden text-center py-10 text-slate-500">No pending payments found.</div>
-                </div>
-            </div>
-
-        </div>
+                <div class="mt-6 overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-slate-400 text-xs uppercase border-b border-slate-700"><th class="pb-3">Code</th><th class="pb-3">Discount</th><th class="pb-3">Usage</th><th class="pb-3">Expires</th><th class="pb-3">Status</th><th class="pb-3">Action</th></tr></thead><tbody id="discountTableBody" class="text-sm divide-y divide-slate-700"></tbody></table><div id="noDiscounts" class="hidden py-8 text-center text-slate-500">No discount codes found. Run the Supabase discount migration first.</div></div>
+            </section>
+        </main>
     </div>
 
-    <!-- Scripts -->
-    <script src="js/supabase-client.js"></script>
     <script>
-        // --- Prediction Logic ---
-        const predForm = document.getElementById('predForm');
-        predForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const round = document.getElementById('roundNum').value;
-            const win = document.getElementById('winNum').value;
-            const pub = document.getElementById('isPublished').checked;
+        const SUPABASE_URL = 'https://xewxigpmvuxkuqtxhxha.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const adminContent = document.getElementById('adminContent');
+        const accessDenied = document.getElementById('accessDenied');
+        const adminStatus = document.getElementById('adminStatus');
+        const discountStatus = document.getElementById('discountStatus');
 
-            const { error } = await supabase
-                .from('predictions')
-                .upsert({ round_number: round, winning_number: win, is_published: pub });
+        function setDiscountStatus(message, error) {
+            discountStatus.textContent = message;
+            discountStatus.className = 'text-sm ' + (error ? 'text-red-300' : 'text-emerald-300');
+        }
 
-            if (error) alert("Error: " + error.message);
-            else {
-                alert("Prediction Updated Successfully!");
-                predForm.reset();
-            }
-        });
+        function randomCode() {
+            const bytes = new Uint8Array(6);
+            if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+            else for (let i = 0; i < bytes.length; i += 1) bytes[i] = Math.floor(Math.random() * 256);
+            return 'DG-' + Array.from(bytes).map((byte) => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
+        }
 
-        // --- Payment Verification Logic ---
+        function addCell(row, text, className) {
+            const cell = document.createElement('td');
+            cell.className = className || 'py-3';
+            cell.textContent = text;
+            row.appendChild(cell);
+            return cell;
+        }
+
         async function loadPendingPayments() {
             const tbody = document.getElementById('paymentTableBody');
             const noPayments = document.getElementById('noPayments');
-            
-            const { data, error } = await supabase
-                .from('payments')
-                .select('*')
-                .eq('status', 'unverified')
-                .order('created_at', { ascending: false });
-
-            if (error) return console.error(error);
-
+            const { data, error } = await supabaseClient.from('payments').select('*').eq('status', 'unverified').order('created_at', { ascending: false });
+            if (error) { noPayments.textContent = error.message; noPayments.classList.remove('hidden'); return; }
             tbody.innerHTML = '';
-            if (data.length === 0) {
-                noPayments.classList.remove('hidden');
-                return;
-            }
-            noPayments.classList.add('hidden');
-
-            data.forEach(pay => {
+            noPayments.classList.toggle('hidden', data.length > 0);
+            data.forEach((pay) => {
                 const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="py-4 text-slate-400 text-xs">${pay.user_id.substring(0,8)}...</td>
-                    <td class="py-4 font-mono">${pay.tx_id}</td>
-                    <td class="py-4 font-bold">${pay.amount}</td>
-                    <td class="py-4">
-                        <button onclick="verifyPayment('${pay.id}')" class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded text-xs font-bold transition-all">Verify</button>
-                    </td>
-                `;
+                addCell(row, String(pay.user_id || '').substring(0, 8) + '...', 'py-4 text-slate-400 text-xs');
+                addCell(row, pay.tx_id || '', 'py-4 font-mono');
+                addCell(row, String(pay.amount || ''), 'py-4 font-bold');
+                const action = addCell(row, '', 'py-4');
+                const button = document.createElement('button');
+                button.className = 'bg-green-600 hover:bg-green-500 px-3 py-1 rounded text-xs font-bold transition-all';
+                button.textContent = 'Verify';
+                button.addEventListener('click', () => verifyPayment(pay.id));
+                action.appendChild(button);
                 tbody.appendChild(row);
             });
         }
 
         async function verifyPayment(id) {
-            const { error } = await supabase
-                .from('payments')
-                .update({ status: 'verified' })
-                .eq('id', id);
-
-            if (error) alert("Error: " + error.message);
-            else {
-                alert("User Verified and Upgraded to PAID!");
-                loadPendingPayments();
-            }
+            const { error } = await supabaseClient.from('payments').update({ status: 'verified' }).eq('id', id);
+            if (error) alert('Error: ' + error.message);
+            else { alert('Payment verified successfully.'); loadPendingPayments(); }
         }
 
-        // --- Initial Setup ---
+        async function loadDiscountCodes() {
+            const tbody = document.getElementById('discountTableBody');
+            const empty = document.getElementById('noDiscounts');
+            const { data, error } = await supabaseClient.from('discount_codes').select('id,code,percent_off,max_uses,used_count,expires_at,active').order('created_at', { ascending: false });
+            if (error) { tbody.innerHTML = ''; empty.textContent = 'Discount table unavailable: ' + error.message; empty.classList.remove('hidden'); return; }
+            tbody.innerHTML = '';
+            empty.classList.toggle('hidden', data.length > 0);
+            data.forEach((discount) => {
+                const row = document.createElement('tr');
+                addCell(row, discount.code, 'py-4 font-mono font-bold text-amber-200');
+                addCell(row, Number(discount.percent_off) + '%', 'py-4');
+                addCell(row, String(discount.used_count || 0) + ' / ' + (discount.max_uses || '∞'), 'py-4 text-slate-300');
+                addCell(row, discount.expires_at ? new Date(discount.expires_at).toLocaleString() : 'Never', 'py-4 text-slate-400 text-xs');
+                addCell(row, discount.active ? 'Active' : 'Inactive', 'py-4 ' + (discount.active ? 'text-emerald-300' : 'text-slate-500'));
+                const action = addCell(row, '', 'py-4');
+                if (discount.active) {
+                    const button = document.createElement('button');
+                    button.className = 'rounded bg-red-500/20 px-3 py-1 text-xs font-bold text-red-300 hover:bg-red-500/30';
+                    button.textContent = 'Deactivate';
+                    button.addEventListener('click', () => deactivateDiscount(discount.id, discount.code));
+                    action.appendChild(button);
+                } else action.textContent = '—';
+                tbody.appendChild(row);
+            });
+        }
+
+        async function deactivateDiscount(id, code) {
+            if (!window.confirm('Deactivate ' + code + '? Existing payment records will not be changed.')) return;
+            const { error } = await supabaseClient.from('discount_codes').update({ active: false }).eq('id', id);
+            if (error) setDiscountStatus(error.message, true);
+            else { setDiscountStatus(code + ' deactivated.', false); loadDiscountCodes(); }
+        }
+
+        document.getElementById('generateDiscountCode').addEventListener('click', () => { document.getElementById('newDiscountCode').value = randomCode(); });
+        document.getElementById('refreshPayments').addEventListener('click', loadPendingPayments);
+        document.getElementById('refreshDiscounts').addEventListener('click', loadDiscountCodes);
+        document.getElementById('predForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const { error } = await supabaseClient.from('predictions').upsert({ round_number: document.getElementById('roundNum').value, winning_number: document.getElementById('winNum').value, is_published: document.getElementById('isPublished').checked });
+            if (error) alert('Error: ' + error.message); else { alert('Prediction updated successfully.'); event.target.reset(); }
+        });
+        document.getElementById('discountForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const codeInput = document.getElementById('newDiscountCode');
+            const code = (codeInput.value.trim() || randomCode()).toUpperCase();
+            const percent = Number(document.getElementById('discountPercent').value);
+            const maxUsesValue = document.getElementById('discountMaxUses').value;
+            const expiresValue = document.getElementById('discountExpires').value;
+            if (!/^([A-Z0-9][A-Z0-9_-]{2,31})$/.test(code)) { setDiscountStatus('Use 3–32 letters, numbers, hyphens, or underscores.', true); return; }
+            if (!Number.isInteger(percent) || percent < 1 || percent > 100) { setDiscountStatus('Discount must be between 1% and 100%.', true); return; }
+            const { error } = await supabaseClient.from('discount_codes').insert({ code, percent_off: percent, max_uses: maxUsesValue ? Number(maxUsesValue) : null, expires_at: expiresValue ? new Date(expiresValue).toISOString() : null, active: true });
+            if (error) setDiscountStatus(error.message, true);
+            else { setDiscountStatus(code + ' created successfully.', false); event.target.reset(); loadDiscountCodes(); }
+        });
+
         window.addEventListener('DOMContentLoaded', async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                document.body.innerHTML = `<div class="flex items-center justify-center h-screen text-2xl font-bold">Access Denied: Please Login First!</div>`;
-            } else {
-                document.getElementById('adminStatus').innerText = "Admin Online: " + user.email;
-                loadPendingPayments();
+            const { data: { user }, error } = await supabaseClient.auth.getUser();
+            const role = user && user.app_metadata && user.app_metadata.role;
+            if (error || !user || role !== 'admin') {
+                adminStatus.textContent = 'Admin authorization required';
+                accessDenied.classList.remove('hidden');
+                if (user && role !== 'admin') document.getElementById('accessDeniedMessage').textContent = 'Signed in as ' + user.email + ', but this account does not have app_metadata.role = admin.';
+                return;
             }
+            adminStatus.textContent = 'Admin Online: ' + user.email;
+            adminContent.classList.remove('hidden');
+            loadPendingPayments();
+            loadDiscountCodes();
         });
     </script>
 </body>
