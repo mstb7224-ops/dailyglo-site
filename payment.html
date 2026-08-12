@@ -6,6 +6,7 @@
     <title>Payment Verification | DailyGlo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/discounts.js"></script>
 </head>
 <body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen p-4">
     <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-700">
@@ -15,20 +16,23 @@
         </div>
 
         <form id="paymentForm" class="space-y-5">
-            <fieldset>
-                <legend class="block text-sm font-medium text-slate-300 mb-3">Select Payment Method</legend>
-                <div class="grid gap-3">
-                    <label class="payment-option flex items-center gap-3 p-4 rounded-lg bg-slate-700 border border-slate-600 cursor-pointer hover:border-blue-400">
-                        <input type="radio" name="paymentMethod" value="bkash" checked class="accent-blue-500">
-                        <span><strong>bKash</strong><small class="block text-slate-400">Bangladesh mobile payment</small></span>
+            <fieldset class="space-y-3">
+                <div class="flex items-center justify-between gap-3">
+                    <legend class="text-sm font-semibold text-slate-200">Choose a payment method</legend>
+                    <span class="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-300">Secure options</span>
+                </div>
+                <div class="grid gap-3 sm:grid-cols-3">
+                    <label class="payment-option group flex cursor-pointer flex-col gap-3 rounded-xl border border-blue-400 bg-slate-700 p-4 transition hover:-translate-y-0.5 hover:border-blue-300">
+                        <span class="flex items-center justify-between"><span class="text-2xl" aria-hidden="true">📱</span><input type="radio" name="paymentMethod" value="bkash" checked class="accent-blue-500"></span>
+                        <span><strong class="block text-sm">bKash</strong><small class="mt-1 block text-xs text-slate-400">TrxID only</small></span>
                     </label>
-                    <label class="payment-option flex items-center gap-3 p-4 rounded-lg bg-slate-700 border border-slate-600 cursor-pointer hover:border-blue-400">
-                        <input type="radio" name="paymentMethod" value="alrajhi" class="accent-blue-500">
-                        <span><strong>Al Rajhi Bank</strong><small class="block text-slate-400">Saudi Arabia bank transfer</small></span>
+                    <label class="payment-option group flex cursor-pointer flex-col gap-3 rounded-xl border border-slate-600 bg-slate-700 p-4 transition hover:-translate-y-0.5 hover:border-blue-300">
+                        <span class="flex items-center justify-between"><span class="text-2xl" aria-hidden="true">🏦</span><input type="radio" name="paymentMethod" value="alrajhi" class="accent-blue-500"></span>
+                        <span><strong class="block text-sm">Al Rajhi Bank</strong><small class="mt-1 block text-xs text-slate-400">Reference + screenshot</small></span>
                     </label>
-                    <label class="payment-option flex items-center gap-3 p-4 rounded-lg bg-slate-700 border border-slate-600 cursor-pointer hover:border-blue-400">
-                        <input type="radio" name="paymentMethod" value="bangkok_bank" class="accent-blue-500">
-                        <span><strong>Kasikornbank (KBank)</strong><small class="block text-slate-400">Thailand bank transfer</small></span>
+                    <label class="payment-option group flex cursor-pointer flex-col gap-3 rounded-xl border border-slate-600 bg-slate-700 p-4 transition hover:-translate-y-0.5 hover:border-blue-300">
+                        <span class="flex items-center justify-between"><span class="text-2xl" aria-hidden="true">🏦</span><input type="radio" name="paymentMethod" value="bangkok_bank" class="accent-blue-500"></span>
+                        <span><strong class="block text-sm">Kasikornbank</strong><small class="mt-1 block text-xs text-slate-400">Reference + screenshot</small></span>
                     </label>
                 </div>
             </fieldset>
@@ -70,9 +74,21 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-slate-300 mb-1" for="amount">Required Amount</label>
-                <input type="number" id="amount" required min="750" max="750" step="0.01" value="750" readonly class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" aria-describedby="amountHint">
-                <p id="amountHint" class="text-xs text-slate-500 mt-1">The required payment amount is 750 SAR.</p>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="amount">Amount to pay</label>
+                <input type="number" id="amount" required min="0" max="750" step="0.01" value="750" readonly class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" aria-describedby="amountHint">
+                <p id="amountHint" class="text-xs text-slate-500 mt-1">Standard membership fee: 750 SAR.</p>
+            </div>
+
+            <div class="rounded-xl border border-amber-300/20 bg-amber-300/5 p-4">
+                <div class="mb-2 flex items-center justify-between gap-3"><label class="text-sm font-semibold text-slate-200" for="discountCode">Have a discount code?</label><span class="text-xs font-medium text-amber-200">Optional</span></div>
+                <div class="flex gap-2"><input type="text" id="discountCode" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white uppercase placeholder:normal-case focus:border-amber-300 focus:outline-none" placeholder="Enter promo code"><button type="button" id="applyDiscountBtn" class="rounded-lg border border-amber-300/40 px-4 py-2.5 text-sm font-semibold text-amber-200 transition hover:bg-amber-300/10">Apply</button></div>
+                <p id="discountMessage" class="mt-2 text-xs text-slate-400" role="status" aria-live="polite">Try DAILYGLO75 or DAILYGLO60.</p>
+            </div>
+
+            <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-4 text-sm">
+                <div class="flex items-center justify-between text-slate-400"><span>Original fee</span><span id="originalAmount">750 SAR</span></div>
+                <div class="mt-2 flex items-center justify-between text-emerald-300"><span>Discount</span><span id="discountAmount">-0 SAR</span></div>
+                <div class="mt-3 flex items-center justify-between border-t border-slate-700 pt-3 font-bold text-white"><span>Final amount</span><span id="finalAmount" class="text-lg text-blue-300">750 SAR</span></div>
             </div>
 
             <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95 shadow-lg">Submit Payment</button>
@@ -91,10 +107,27 @@
         const methodLabels = { bkash: 'bKash', alrajhi: 'Al Rajhi Bank', bangkok_bank: 'Kasikornbank (KBank)' };
         const PAYMENT_BUCKET = 'iqama_documents';
         const MAX_SCREENSHOT_SIZE = 5 * 1024 * 1024;
+        const discountCodeInput = document.getElementById('discountCode');
+        const applyDiscountBtn = document.getElementById('applyDiscountBtn');
+        const discountMessage = document.getElementById('discountMessage');
+        const discountAmount = document.getElementById('discountAmount');
+        const finalAmount = document.getElementById('finalAmount');
 
         function getSelectedMethod() {
             const selected = document.querySelector('input[name="paymentMethod"]:checked');
             return selected ? selected.value : 'bkash';
+        }
+
+        function updateDiscountSummary(showMessage) {
+            const result = window.DailyGloDiscounts.calculate(discountCodeInput.value);
+            document.getElementById('amount').value = result.finalAmount;
+            discountAmount.textContent = '-' + result.discountAmount + ' SAR';
+            finalAmount.textContent = result.finalAmount + ' SAR';
+            if (showMessage) {
+                discountMessage.textContent = result.valid ? result.label + ' applied. You save ' + result.discountAmount + ' SAR.' : 'Invalid code. Try DAILYGLO75 or DAILYGLO60.';
+                discountMessage.className = 'mt-2 text-xs ' + (result.valid ? 'text-emerald-300' : 'text-red-300');
+            }
+            return result;
         }
 
         function updatePaymentDetails() {
@@ -135,6 +168,14 @@
         document.querySelectorAll('input[name="paymentMethod"]').forEach(function (input) {
             input.addEventListener('change', updatePaymentDetails);
         });
+        applyDiscountBtn.addEventListener('click', function () { updateDiscountSummary(true); });
+        discountCodeInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') { event.preventDefault(); updateDiscountSummary(true); }
+        });
+        discountCodeInput.addEventListener('input', function () {
+            discountMessage.textContent = 'Press Apply to calculate your discount.';
+            discountMessage.className = 'mt-2 text-xs text-slate-400';
+        });
         screenshotFile.addEventListener('change', function () {
             if (!screenshotFile.files.length) return;
             try {
@@ -149,13 +190,15 @@
             }
         });
         updatePaymentDetails();
+        updateDiscountSummary(false);
 
         paymentForm.addEventListener('submit', async function (event) {
             event.preventDefault();
             const method = getSelectedMethod();
             const isBank = method !== 'bkash';
             const txId = document.getElementById('txId').value.trim();
-            const amount = document.getElementById('amount').value;
+            const discount = updateDiscountSummary(false);
+            const amount = String(discount.finalAmount);
             let uploadedPath = '';
             submitBtn.disabled = true;
             submitBtn.innerText = 'Processing...';
@@ -163,7 +206,7 @@
             statusMsg.textContent = 'Submitting, please wait...';
 
             try {
-                if (amount !== '750') throw new Error('The required payment amount is 750 SAR.');
+                if (discountCodeInput.value.trim() && !discount.valid) throw new Error('The discount code is invalid.');
                 if (!txId) throw new Error(isBank ? 'Please enter the bank transaction reference.' : 'Please enter the bKash TrxID.');
                 if (isBank) validateBankScreenshot(screenshotFile.files[0]);
                 if (!window.supabase || typeof window.supabase.createClient !== 'function') {
@@ -191,7 +234,7 @@
 
                 const { error } = await supabaseClient.from('payments').insert([{
                     user_id: user.id,
-                    tx_id: '[' + methodLabels[method] + '] ' + txId + proofSuffix,
+                    tx_id: '[' + methodLabels[method] + '] ' + txId + (discount.valid ? ' | ' + discount.code + ' | ' + discount.percent + '% off' : '') + proofSuffix,
                     amount: amount,
                     status: 'unverified'
                 }]);
@@ -201,7 +244,9 @@
                 statusMsg.className = 'mt-4 text-center text-sm text-green-400';
                 paymentForm.reset();
                 document.querySelector('input[name="paymentMethod"][value="bkash"]').checked = true;
+                discountCodeInput.value = '';
                 updatePaymentDetails();
+                updateDiscountSummary(false);
             } catch (error) {
                 if (uploadedPath && window.supabase && typeof window.supabase.createClient === 'function') {
                     try {

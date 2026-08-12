@@ -359,6 +359,38 @@
     update();
   }
 
+  function bindDiscountFields() {
+    var codeInput = byId('discountCode');
+    var applyButton = byId('applyDiscountBtn');
+    var message = byId('discountMessage');
+    var discountAmount = byId('discountAmount');
+    var finalAmount = byId('finalAmount');
+    var amountInput = byId('amount');
+    if (!codeInput || !applyButton || !message || !discountAmount || !finalAmount || !amountInput || !window.DailyGloDiscounts) return;
+
+    function update(showMessage) {
+      var result = window.DailyGloDiscounts.calculate(codeInput.value);
+      amountInput.value = result.finalAmount;
+      discountAmount.textContent = '-' + result.discountAmount + ' SAR';
+      finalAmount.textContent = result.finalAmount + ' SAR';
+      if (showMessage) {
+        message.textContent = result.valid ? result.label + ' applied. You save ' + result.discountAmount + ' SAR.' : 'Invalid code. Try DAILYGLO75 or DAILYGLO60.';
+        message.className = 'discount-message ' + (result.valid ? 'success' : 'error');
+      }
+      return result;
+    }
+
+    applyButton.addEventListener('click', function () { update(true); });
+    codeInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') { event.preventDefault(); update(true); }
+    });
+    codeInput.addEventListener('input', function () {
+      message.textContent = 'Press Apply to calculate your discount.';
+      message.className = 'discount-message';
+    });
+    update(false);
+  }
+
   function bindRegisterForm() {
     var form = byId('regForm');
     if (!form) return;
@@ -437,6 +469,7 @@
     var form = byId('paymentForm');
     if (!form) return;
     var status = getStatusElement(form);
+    var discountInput = byId('discountCode');
     bindFileInput('screenshotFile', 'filePreview', '.file-text strong', status, 'Payment screenshot');
     form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -445,8 +478,13 @@
       var isBank = methodValue !== 'bkash';
       var transaction = byId('transactionId');
       var screenshot = byId('screenshotFile');
+      var discount = window.DailyGloDiscounts ? window.DailyGloDiscounts.calculate(discountInput ? discountInput.value : '') : { valid: false, code: '', percent: 0, finalAmount: 750 };
       if (!form.checkValidity()) {
         form.reportValidity();
+        return;
+      }
+      if (discountInput && discountInput.value.trim() && !discount.valid) {
+        showStatus(status, 'The discount code is invalid.', 'error');
         return;
       }
       if (isBank && !validateFile(screenshot, status, 'Payment screenshot')) return;
@@ -456,6 +494,9 @@
       var data = new FormData();
       data.append('method', methodMap[methodValue] || 'bkash');
       data.append('requiredAmount', '750');
+      data.append('finalAmount', String(discount.finalAmount));
+      data.append('discountCode', discount.code);
+      data.append('discountPercent', String(discount.percent));
       data.append('transactionReference', (transaction && transaction.value.trim()) || '');
       if (isBank && screenshot && screenshot.files && screenshot.files.length) {
         data.append('screenshot', screenshot.files[0]);
@@ -468,6 +509,13 @@
         if (defaultMethod) {
           defaultMethod.checked = true;
           defaultMethod.dispatchEvent(new Event('change'));
+        }
+        if (window.DailyGloDiscounts && byId('amount')) {
+          byId('amount').value = '750';
+          if (byId('discountAmount')) byId('discountAmount').textContent = '-0 SAR';
+          if (byId('finalAmount')) byId('finalAmount').textContent = '750 SAR';
+          if (discountInput) discountInput.value = '';
+          if (byId('discountMessage')) { byId('discountMessage').textContent = 'Try DAILYGLO75 or DAILYGLO60.'; byId('discountMessage').className = 'discount-message'; }
         }
       }).catch(function (error) { handleApiError(form, error); });
     });
@@ -560,6 +608,7 @@
     bindMobileMenu();
     bindFaq();
     bindPaymentMethods();
+    bindDiscountFields();
     bindRegisterForm();
     bindLoginForm();
     bindContactForm();
