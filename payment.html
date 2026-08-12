@@ -3,104 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Verification | Master Engine</title>
+    <title>Payment Verification | DailyGlo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen">
-
-    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
+<body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen p-4">
+    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-700">
         <div class="text-center mb-8">
             <h1 class="text-3xl font-bold text-blue-400">Payment Verification</h1>
-            <p class="text-slate-400 mt-2">টাকা পাঠানোর পর নিচের ডিটেইলস সাবমিট কর।</p>
-        </div>
-
-        <!-- Payment Instructions -->
-        <div class="bg-slate-700 p-4 rounded-lg mb-6 border-l-4 border-blue-500">
-            <p class="text-sm font-semibold text-blue-300">বিকাশ/নগদ নম্বর: <span class="text-white text-lg block">01XXXXXXXXX</span></p>
-            <p class="text-xs text-slate-400 mt-1">* টাকা পাঠানোর পর Transaction ID সংগ্রহ কর।</p>
+            <p class="text-slate-400 mt-2">Choose a payment method, complete the transfer, then submit your details.</p>
         </div>
 
         <form id="paymentForm" class="space-y-5">
-            <!-- Transaction ID Input -->
-            <div>
-                <label class="block text-sm font-medium text-slate-300 mb-1">Transaction ID</label>
-                <input type="text" id="txId" required 
-                    class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" 
-                    placeholder="Enter TxID here...">
+            <fieldset>
+                <legend class="block text-sm font-medium text-slate-300 mb-3">Select Payment Method</legend>
+                <div class="grid gap-3">
+                    <label class="payment-option flex items-center gap-3 p-4 rounded-lg bg-slate-700 border border-slate-600 cursor-pointer hover:border-blue-400">
+                        <input type="radio" name="paymentMethod" value="bkash" checked class="accent-blue-500">
+                        <span><strong>bKash</strong><small class="block text-slate-400">Bangladesh mobile payment</small></span>
+                    </label>
+                    <label class="payment-option flex items-center gap-3 p-4 rounded-lg bg-slate-700 border border-slate-600 cursor-pointer hover:border-blue-400">
+                        <input type="radio" name="paymentMethod" value="alrajhi" class="accent-blue-500">
+                        <span><strong>Al Rajhi Bank</strong><small class="block text-slate-400">Saudi Arabia bank transfer</small></span>
+                    </label>
+                    <label class="payment-option flex items-center gap-3 p-4 rounded-lg bg-slate-700 border border-slate-600 cursor-pointer hover:border-blue-400">
+                        <input type="radio" name="paymentMethod" value="bangkok_bank" class="accent-blue-500">
+                        <span><strong>Kasikornbank (KBank)</strong><small class="block text-slate-400">Thailand bank transfer</small></span>
+                    </label>
+                </div>
+            </fieldset>
+
+            <div id="bkashDetails" class="payment-details bg-slate-700 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-sm font-semibold text-blue-300">bKash Number</p>
+                <p class="text-white text-lg">01923334305</p>
+                <p class="text-xs text-slate-300 mt-1">Receiver: MST SHAHNAZ · Personal Number</p>
+                <p class="text-xs text-slate-400 mt-1">Type: Send Money</p>
+            </div>
+            <div id="alrajhiDetails" class="payment-details hidden bg-slate-700 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-sm font-semibold text-blue-300">Al Rajhi Bank</p>
+                <p class="text-slate-300">Account Name: <span class="text-white">MD JAMAL HOSSAIN</span></p>
+                <p class="text-slate-300">Account Number: <span class="text-white">077080010006086435018</span></p>
+                <p class="text-slate-300">IBAN: <span class="text-white">SA9380000867608016435018</span></p>
+                <p class="text-slate-300">SWIFT: <span class="text-white">RJHISARI</span></p>
+                <p class="text-xs text-slate-400 mt-1">Required Amount: 750 SAR</p>
+            </div>
+            <div id="bangkok_bankDetails" class="payment-details hidden bg-slate-700 p-4 rounded-lg border-l-4 border-blue-500">
+                <p class="text-sm font-semibold text-blue-300">Kasikornbank (KBank)</p>
+                <p class="text-slate-300">Account Name: <span class="text-white">Thai Govt Organization</span></p>
+                <p class="text-slate-300">Account Number: <span class="text-white">2596356673893939</span></p>
+                <p class="text-slate-300">Branch: <span class="text-white">Nonthaburi</span></p>
+                <p class="text-slate-300">SWIFT: <span class="text-white">KASITHBKXXX</span></p>
+                <p class="text-xs text-slate-400 mt-1">Required Amount: 750 SAR</p>
             </div>
 
-            <!-- Amount Input -->
             <div>
-                <label class="block text-sm font-medium text-slate-300 mb-1">Amount Paid</label>
-                <input type="number" id="amount" required 
-                    class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" 
-                    placeholder="Enter amount (e.g. 500)">
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="txId">bKash Transaction ID / TrxID</label>
+                <input type="text" id="txId" required class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" placeholder="Enter bKash TrxID">
+                <p class="text-xs text-slate-500 mt-1">Never enter your bKash PIN or OTP.</p>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn" 
-                class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95 shadow-lg">
-                Submit Payment
-            </button>
+            <div id="screenshotGroup" class="hidden">
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="screenshotFile">Bank Payment Screenshot</label>
+                <input type="file" id="screenshotFile" accept="image/jpeg,image/png,image/webp" disabled class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white">
+                <p class="text-xs text-slate-500 mt-1">Required for Al Rajhi Bank and Kasikornbank. JPG, PNG, or WebP up to 5MB.</p>
+                <img id="filePreview" class="mt-3 max-h-48 rounded-lg hidden" alt="Payment screenshot preview">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="amount">Required Amount</label>
+                <input type="number" id="amount" required min="750" max="750" step="0.01" value="750" readonly class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" aria-describedby="amountHint">
+                <p id="amountHint" class="text-xs text-slate-500 mt-1">The required payment amount is 750 SAR.</p>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95 shadow-lg">Submit Payment</button>
         </form>
 
-        <div id="statusMsg" class="mt-4 text-center text-sm hidden"></div>
+        <div id="statusMsg" class="mt-4 text-center text-sm hidden" role="status" aria-live="polite"></div>
+        <p class="text-xs text-slate-500 text-center mt-5">Payment method and reference are recorded together for admin matching.</p>
     </div>
 
-    <!-- Script Section -->
-    <script src="js/supabase-client.js"></script> 
     <script>
         const paymentForm = document.getElementById('paymentForm');
         const statusMsg = document.getElementById('statusMsg');
         const submitBtn = document.getElementById('submitBtn');
+        const screenshotGroup = document.getElementById('screenshotGroup');
+        const screenshotFile = document.getElementById('screenshotFile');
+        const methodLabels = { bkash: 'bKash', alrajhi: 'Al Rajhi Bank', bangkok_bank: 'Kasikornbank (KBank)' };
+        const PAYMENT_BUCKET = 'iqama_documents';
+        const MAX_SCREENSHOT_SIZE = 5 * 1024 * 1024;
 
-        paymentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            // UI Loading state
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Processing...";
-            statusMsg.classList.remove('hidden');
-            statusMsg.innerText = "সাবমিট হচ্ছে, দয়া করে অপেক্ষা কর...";
-            statusMsg.className = "mt-4 text-center text-sm text-blue-400";
+        function getSelectedMethod() {
+            const selected = document.querySelector('input[name="paymentMethod"]:checked');
+            return selected ? selected.value : 'bkash';
+        }
 
-            const txId = document.getElementById('txId').value;
+        function updatePaymentDetails() {
+            const method = getSelectedMethod();
+            const isBank = method !== 'bkash';
+            document.querySelectorAll('.payment-details').forEach(function (panel) {
+                panel.classList.toggle('hidden', panel.id !== method + 'Details');
+            });
+            document.querySelectorAll('.payment-option').forEach(function (option) {
+                const input = option.querySelector('input');
+                option.classList.toggle('border-blue-400', input && input.checked);
+            });
+            document.querySelector('label[for="txId"]').textContent = isBank ? 'Bank Transaction Reference' : 'bKash Transaction ID / TrxID';
+            document.getElementById('txId').placeholder = isBank ? 'Enter bank transfer reference' : 'Enter bKash TrxID';
+            document.querySelector('#txId + p').textContent = isBank ? 'Enter the reference shown on your bank transfer.' : 'Never enter your bKash PIN or OTP.';
+            screenshotGroup.classList.toggle('hidden', !isBank);
+            screenshotFile.required = isBank;
+            screenshotFile.disabled = !isBank;
+            if (!isBank) {
+                screenshotFile.value = '';
+                document.getElementById('filePreview').classList.add('hidden');
+            }
+        }
+
+        function getFileExtension(file) {
+            const types = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+            return types[file.type] || 'jpg';
+        }
+
+        function validateBankScreenshot(file) {
+            if (!file) throw new Error('Please upload the bank payment screenshot.');
+            if (file.size > MAX_SCREENSHOT_SIZE) throw new Error('The screenshot must be 5 MB or smaller.');
+            if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
+                throw new Error('Please upload a JPG, PNG, or WebP screenshot.');
+            }
+        }
+
+        document.querySelectorAll('input[name="paymentMethod"]').forEach(function (input) {
+            input.addEventListener('change', updatePaymentDetails);
+        });
+        screenshotFile.addEventListener('change', function () {
+            if (!screenshotFile.files.length) return;
+            try {
+                validateBankScreenshot(screenshotFile.files[0]);
+                const preview = document.getElementById('filePreview');
+                preview.src = URL.createObjectURL(screenshotFile.files[0]);
+                preview.classList.remove('hidden');
+            } catch (error) {
+                screenshotFile.value = '';
+                statusMsg.textContent = error.message;
+                statusMsg.className = 'mt-4 text-center text-sm text-red-400';
+            }
+        });
+        updatePaymentDetails();
+
+        paymentForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const method = getSelectedMethod();
+            const isBank = method !== 'bkash';
+            const txId = document.getElementById('txId').value.trim();
             const amount = document.getElementById('amount').value;
+            let uploadedPath = '';
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Processing...';
+            statusMsg.className = 'mt-4 text-center text-sm text-blue-400';
+            statusMsg.textContent = 'Submitting, please wait...';
 
             try {
-                // ১. বর্তমান লগইন করা ইউজারের আইডি নেওয়া
-                const { data: { user } } = await supabase.auth.getUser();
-                
-                if (!user) throw new Error("ইউজার লগইন করা নেই!");
+                if (amount !== '750') throw new Error('The required payment amount is 750 SAR.');
+                if (!txId) throw new Error(isBank ? 'Please enter the bank transaction reference.' : 'Please enter the bKash TrxID.');
+                if (isBank) validateBankScreenshot(screenshotFile.files[0]);
+                if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+                    throw new Error('Supabase SDK could not be loaded.');
+                }
+                const supabaseClient = window.supabase.createClient(
+                    'https://xewxigpmvuxkuqtxhxha.supabase.co',
+                    'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h'
+                );
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) throw new Error('Please log in before submitting a payment.');
 
-                // ২. payments টেবিলে ডাটা পুশ করা
-                const { error } = await supabase
-                    .from('payments')
-                    .insert([
-                        { 
-                            user_id: user.id, 
-                            tx_id: txId, 
-                            amount: amount, 
-                            status: 'unverified' 
-                        }
-                    ]);
+                let proofSuffix = '';
+                if (isBank) {
+                    const randomId = window.crypto && typeof window.crypto.randomUUID === 'function' ? window.crypto.randomUUID() : String(Date.now());
+                    uploadedPath = 'iqama/' + user.id + '/payment-' + randomId + '.' + getFileExtension(screenshotFile.files[0]);
+                    const uploadResult = await supabaseClient.storage.from(PAYMENT_BUCKET).upload(uploadedPath, screenshotFile.files[0], {
+                        cacheControl: '3600',
+                        contentType: screenshotFile.files[0].type,
+                        upsert: false
+                    });
+                    if (uploadResult.error) throw uploadResult.error;
+                    proofSuffix = ' | proof:' + uploadedPath;
+                }
 
+                const { error } = await supabaseClient.from('payments').insert([{
+                    user_id: user.id,
+                    tx_id: '[' + methodLabels[method] + '] ' + txId + proofSuffix,
+                    amount: amount,
+                    status: 'unverified'
+                }]);
                 if (error) throw error;
 
-                // Success State
-                statusMsg.innerText = "✅ পেমেন্ট সাবমিট হয়েছে! অ্যাডমিন ভেরিফাই করলে অ্যাক্সেস পাবে।";
-                statusMsg.className = "mt-4 text-center text-sm text-green-400";
+                statusMsg.textContent = 'Payment details submitted successfully. It is now awaiting admin review.';
+                statusMsg.className = 'mt-4 text-center text-sm text-green-400';
                 paymentForm.reset();
-
-            } catch (err) {
-                console.error(err);
-                statusMsg.innerText = "❌ এরর: " + err.message;
-                statusMsg.className = "mt-4 text-center text-sm text-red-400";
+                document.querySelector('input[name="paymentMethod"][value="bkash"]').checked = true;
+                updatePaymentDetails();
+            } catch (error) {
+                if (uploadedPath && window.supabase && typeof window.supabase.createClient === 'function') {
+                    try {
+                        const cleanupClient = window.supabase.createClient('https://xewxigpmvuxkuqtxhxha.supabase.co', 'sb_publishable_C-f5NVBKOhZBXXb45ybjvw_JKpCpI8h');
+                        await cleanupClient.storage.from(PAYMENT_BUCKET).remove([uploadedPath]);
+                    } catch (cleanupError) { console.warn('Payment proof cleanup failed.', cleanupError); }
+                }
+                console.error(error);
+                statusMsg.textContent = 'Error: ' + (error.message || 'Payment submission failed.');
+                statusMsg.className = 'mt-4 text-center text-sm text-red-400';
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Submit Payment";
+                submitBtn.innerText = 'Submit Payment';
             }
         });
     </script>

@@ -325,11 +325,35 @@
     function update() {
       var selected = document.querySelector('input[name="paymentMethod"]:checked');
       var value = selected ? selected.value : 'bkash';
+      var isBank = value !== 'bkash';
       document.querySelectorAll('.method-details').forEach(function (panel) {
         panel.style.display = panel.id.toLowerCase().indexOf(value) !== -1 ? 'block' : 'none';
       });
       var transaction = byId('transactionId');
-      if (transaction) transaction.required = value === 'bkash';
+      var transactionLabel = byId('transactionLabel');
+      var transactionHint = byId('transactionHint');
+      var screenshotGroup = byId('screenshotGroup');
+      var screenshot = byId('screenshotFile');
+      if (transaction) {
+        transaction.required = true;
+        transaction.placeholder = isBank ? 'Enter bank transfer reference' : 'Enter bKash TrxID';
+      }
+      if (transactionLabel) {
+        transactionLabel.innerHTML = (isBank ? 'Bank Transaction Reference' : 'bKash Transaction ID / TrxID') + ' <span class="required">*</span>';
+      }
+      if (transactionHint) {
+        transactionHint.textContent = isBank ? 'Enter the reference shown on your bank transfer.' : 'Never enter your bKash PIN or OTP.';
+      }
+      if (screenshotGroup) screenshotGroup.style.display = isBank ? 'block' : 'none';
+      if (screenshot) {
+        screenshot.required = isBank;
+        screenshot.disabled = !isBank;
+        if (!isBank) screenshot.value = '';
+      }
+      document.querySelectorAll('.payment-option, .payment-method').forEach(function (option) {
+        var input = option.querySelector('input[name="paymentMethod"]');
+        if (input) option.classList.toggle('active', input.checked);
+      });
     }
     methods.forEach(function (method) { method.addEventListener('change', update); });
     update();
@@ -416,23 +440,35 @@
     bindFileInput('screenshotFile', 'filePreview', '.file-text strong', status, 'Payment screenshot');
     form.addEventListener('submit', function (event) {
       event.preventDefault();
+      var selected = document.querySelector('input[name="paymentMethod"]:checked');
+      var methodValue = selected ? selected.value : 'bkash';
+      var isBank = methodValue !== 'bkash';
+      var transaction = byId('transactionId');
+      var screenshot = byId('screenshotFile');
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
-      if (!validateFile(byId('screenshotFile'), status, 'Payment screenshot')) return;
+      if (isBank && !validateFile(screenshot, status, 'Payment screenshot')) return;
       var button = byId('submitBtn');
-      setButtonState(button, true, 'Uploading...');
-      var selected = document.querySelector('input[name="paymentMethod"]:checked');
-      var methodMap = { bkash: 'bkash', bank: 'bank_transfer', binance: 'binance_pay' };
+      setButtonState(button, true, isBank ? 'Uploading...' : 'Submitting...');
+      var methodMap = { bkash: 'bkash', alrajhi: 'al_rajhi_bank', bangkok_bank: 'bangkok_bank' };
       var data = new FormData();
-      data.append('method', methodMap[selected ? selected.value : 'bkash']);
-      data.append('transactionReference', (byId('transactionId') && byId('transactionId').value.trim()) || '');
-      data.append('screenshot', byId('screenshotFile').files[0]);
+      data.append('method', methodMap[methodValue] || 'bkash');
+      data.append('requiredAmount', '750');
+      data.append('transactionReference', (transaction && transaction.value.trim()) || '');
+      if (isBank && screenshot && screenshot.files && screenshot.files.length) {
+        data.append('screenshot', screenshot.files[0]);
+      }
       apiFetch('/api/payments', { method: 'POST', body: data }).then(function () {
         setButtonState(button, false);
-        showStatus(status, 'Payment proof submitted successfully. It is now awaiting admin review.', 'success');
+        showStatus(status, 'Payment details submitted successfully. It is now awaiting admin review.', 'success');
         form.reset();
+        var defaultMethod = document.querySelector('input[name="paymentMethod"][value="bkash"]');
+        if (defaultMethod) {
+          defaultMethod.checked = true;
+          defaultMethod.dispatchEvent(new Event('change'));
+        }
       }).catch(function (error) { handleApiError(form, error); });
     });
   }
