@@ -4,7 +4,8 @@
   var BASE_AMOUNT = 750;
   var DEFAULT_CODES = {
     DAILYGLO75: { percent: 75, label: '75% off' },
-    DAILYGLO60: { percent: 60, label: '60% off' }
+    DAILYGLO60: { percent: 60, label: '60% off' },
+    SPECIAL5: { percent: 90, label: '90% off' }
   };
   var activeCodes = Object.assign({}, DEFAULT_CODES);
   var loadedFromDatabase = false;
