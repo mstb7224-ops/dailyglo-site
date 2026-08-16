@@ -542,8 +542,8 @@
   };
 
   function bindCountdown() {
-    // 16 Aug 2026, 12:00:00 GMT+3 = 2026-08-16T09:00:00.000Z.
-    var targetUtc = new Date('2026-08-16T09:00:00.000Z').getTime();
+    // 1 Sep 2026, 12:00:00 GMT/UTC = 2026-09-01T12:00:00.000Z.
+    var targetUtc = new Date('2026-09-01T12:00:00.000Z').getTime();
 
     function pad(value) { return String(Math.max(0, value)).padStart(2, '0'); }
 
