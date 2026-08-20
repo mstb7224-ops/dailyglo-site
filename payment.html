@@ -241,21 +241,20 @@
                 let paymentInsert = await supabaseClient.from('payments').insert([Object.assign({ user_id: paymentUserId }, paymentRecord)]);
                 const firstErrorMessage = paymentInsert.error && String(paymentInsert.error.message || '');
                 if (paymentInsert.error && /foreign key|user_id|violates/i.test(firstErrorMessage)) {
-                    // Some existing deployments link payments to public.members.id instead of auth.users.id.
-                    // Resolve the member row by the authenticated email and retry only for that FK mismatch.
+                    // Older deployments may link payments to public.members.id or public.users.id.
+                    // Resolve a matching profile by authenticated email and retry only after the FK error.
+                    const candidateIds = [];
                     const memberLookup = await supabaseClient.from('members').select('id').eq('email', user.email).maybeSingle();
-                    if (memberLookup.error) throw paymentInsert.error;
-                    if (!memberLookup.data) {
-                        const memberCreate = await supabaseClient.from('members').upsert([{
-                            id: user.id,
-                            email: user.email,
-                            user_type: 'free'
-                        }], { onConflict: 'id' });
-                        if (memberCreate.error) throw paymentInsert.error;
-                    } else if (memberLookup.data.id && memberLookup.data.id !== user.id) {
-                        paymentUserId = memberLookup.data.id;
+                    if (memberLookup.data && memberLookup.data.id) candidateIds.push(memberLookup.data.id);
+                    const usersLookup = await supabaseClient.from('users').select('id').eq('email', user.email).maybeSingle();
+                    if (usersLookup.data && usersLookup.data.id) candidateIds.push(usersLookup.data.id);
+                    for (let index = 0; index < candidateIds.length; index += 1) {
+                        if (candidateIds[index] === user.id) continue;
+                        paymentUserId = candidateIds[index];
+                        const retry = await supabaseClient.from('payments').insert([Object.assign({ user_id: paymentUserId }, paymentRecord)]);
+                        paymentInsert = retry;
+                        if (!retry.error) break;
                     }
-                    paymentInsert = await supabaseClient.from('payments').insert([Object.assign({ user_id: paymentUserId }, paymentRecord)]);
                 }
                 if (paymentInsert.error) throw paymentInsert.error;
 
