@@ -232,13 +232,32 @@
                     proofSuffix = ' | proof:' + uploadedPath;
                 }
 
-                const { error } = await supabaseClient.from('payments').insert([{
-                    user_id: user.id,
+                const paymentRecord = {
                     tx_id: '[' + methodLabels[method] + '] ' + txId + (discount.valid ? ' | ' + discount.code + ' | ' + discount.percent + '% off' : '') + proofSuffix,
                     amount: amount,
                     status: 'unverified'
-                }]);
-                if (error) throw error;
+                };
+                let paymentUserId = user.id;
+                let paymentInsert = await supabaseClient.from('payments').insert([Object.assign({ user_id: paymentUserId }, paymentRecord)]);
+                const firstErrorMessage = paymentInsert.error && String(paymentInsert.error.message || '');
+                if (paymentInsert.error && /foreign key|user_id|violates/i.test(firstErrorMessage)) {
+                    // Some existing deployments link payments to public.members.id instead of auth.users.id.
+                    // Resolve the member row by the authenticated email and retry only for that FK mismatch.
+                    const memberLookup = await supabaseClient.from('members').select('id').eq('email', user.email).maybeSingle();
+                    if (memberLookup.error) throw paymentInsert.error;
+                    if (!memberLookup.data) {
+                        const memberCreate = await supabaseClient.from('members').upsert([{
+                            id: user.id,
+                            email: user.email,
+                            user_type: 'free'
+                        }], { onConflict: 'id' });
+                        if (memberCreate.error) throw paymentInsert.error;
+                    } else if (memberLookup.data.id && memberLookup.data.id !== user.id) {
+                        paymentUserId = memberLookup.data.id;
+                    }
+                    paymentInsert = await supabaseClient.from('payments').insert([Object.assign({ user_id: paymentUserId }, paymentRecord)]);
+                }
+                if (paymentInsert.error) throw paymentInsert.error;
 
                 statusMsg.textContent = 'Payment details submitted successfully. It is now awaiting admin review.';
                 statusMsg.className = 'mt-4 text-center text-sm text-green-400';

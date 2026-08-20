@@ -131,6 +131,7 @@
       if (uploadResult.error) throw uploadResult.error;
 
       var memberResult = await client.from('members').upsert([{
+        id: user.id,
         email: values.email,
         user_type: 'free'
       }], { onConflict: 'email' });
