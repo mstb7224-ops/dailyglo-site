@@ -319,26 +319,32 @@
     </footer>
 
     <script>
-        // COUNTDOWN TIMER — 16 Aug 2026, 12:00 PM Saudi time (UTC+3) = 09:00:00 UTC
+        // Thailand Lottery schedule: 24 draws per year at 12:00 PM Saudi Arabia time (09:00 UTC).
+        const drawMonthDays = [[0,2],[0,17],[1,1],[1,16],[2,1],[2,16],[3,1],[3,16],[4,2],[4,16],[5,1],[5,16],[6,1],[6,16],[7,1],[7,16],[8,1],[8,16],[9,1],[9,16],[10,1],[10,16],[11,1],[11,16]];
+        function getDrawSchedule(year) {
+            return drawMonthDays.map(function (monthDay) { return new Date(Date.UTC(year, monthDay[0], monthDay[1], 9, 0, 0)); });
+        }
+        function getNextDraw(now) {
+            const year = now.getUTCFullYear();
+            const schedule = getDrawSchedule(year).concat(getDrawSchedule(year + 1));
+            return schedule.find(function (draw) { return draw.getTime() > now.getTime(); }) || schedule[schedule.length - 1];
+        }
         function updateCountdown() {
-            const drawDate = new Date('2026-08-16T12:00:00+03:00');
-            const now = new Date();
-            const diff = drawDate - now;
-            if (diff > 0) {
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                document.getElementById('days').textContent = String(days).padStart(2, '0');
-                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-            } else {
-                document.getElementById('days').textContent = '00';
-                document.getElementById('hours').textContent = '00';
-                document.getElementById('minutes').textContent = '00';
-                document.getElementById('seconds').textContent = '00';
-            }
+            const drawDate = getNextDraw(new Date());
+            const diff = Math.max(0, drawDate.getTime() - Date.now());
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            const dateText = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Riyadh', day: 'numeric', month: 'long', year: 'numeric' }).format(drawDate).toUpperCase();
+            const dateElement = document.querySelector('[data-next-draw-date]');
+            if (dateElement) dateElement.textContent = dateText;
+            const timeElement = document.querySelector('[data-next-draw-time]');
+            if (timeElement) timeElement.innerHTML = '<i class="far fa-clock"></i> 12:00 PM • SAUDI ARABIA TIME';
         }
         updateCountdown();
         setInterval(updateCountdown, 1000);
