@@ -542,20 +542,62 @@
   };
 
   function bindCountdown() {
-    // 1 Sep 2026, 12:00:00 GMT/UTC = 2026-09-01T12:00:00.000Z.
-    var targetUtc = new Date('2026-09-01T12:00:00.000Z').getTime();
+    // Thailand Lottery 2026 schedule: every draw is at 12:00 PM Saudi Arabia time (UTC+3 = 09:00 UTC).
+    var drawMonthDays = [
+      [0, 2], [0, 17], [1, 1], [1, 16], [2, 1], [2, 16],
+      [3, 1], [3, 16], [4, 2], [4, 16], [5, 1], [5, 16],
+      [6, 1], [6, 16], [7, 1], [7, 16], [8, 1], [8, 16],
+      [9, 1], [9, 16], [10, 1], [10, 16], [11, 1], [11, 16]
+    ];
+
+    function getDrawSchedule(year) {
+      return drawMonthDays.map(function (monthDay) {
+        return new Date(Date.UTC(year, monthDay[0], monthDay[1], 9, 0, 0, 0));
+      });
+    }
+
+    function getNextDraw(now) {
+      var currentYear = now.getUTCFullYear();
+      var schedules = getDrawSchedule(currentYear).concat(getDrawSchedule(currentYear + 1));
+      return schedules.find(function (draw) { return draw.getTime() > now.getTime(); }) || schedules[schedules.length - 1];
+    }
 
     function pad(value) { return String(Math.max(0, value)).padStart(2, '0'); }
 
-    // Bind every visible + accessible countdown on the page so all start ticking.
+    function updateDrawLabels(draw) {
+      var dateText = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Riyadh', day: 'numeric', month: 'long', year: 'numeric'
+      }).format(draw);
+      var timeText = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Riyadh', hour: 'numeric', minute: '2-digit', hour12: true
+      }).format(draw) + ' • SAUDI ARABIA TIME';
+      document.querySelectorAll('[data-next-draw-date]').forEach(function (element) {
+        element.textContent = dateText.toUpperCase();
+      });
+      document.querySelectorAll('[data-next-draw-time]').forEach(function (element) {
+        element.textContent = timeText;
+      });
+      document.querySelectorAll('[data-local-draw-time]').forEach(function (element) {
+        element.textContent = dateText + ' at ' + timeText;
+      });
+      document.querySelectorAll('[data-local-timezone]').forEach(function (element) {
+        element.textContent = 'Saudi Arabia Time (GMT+3)';
+      });
+    }
+
     document.querySelectorAll('[data-countdown]').forEach(function (countdown) {
       var days = countdown.querySelector('[data-countdown-days]');
       var hours = countdown.querySelector('[data-countdown-hours]');
       var minutes = countdown.querySelector('[data-countdown-minutes]');
       var seconds = countdown.querySelector('[data-countdown-seconds]');
+      var activeDraw = null;
       function render() {
-        var remaining = Math.max(0, targetUtc - Date.now());
-        var totalSeconds = Math.floor(remaining / 1000);
+        var now = new Date();
+        if (!activeDraw || now.getTime() >= activeDraw.getTime()) {
+          activeDraw = getNextDraw(now);
+          updateDrawLabels(activeDraw);
+        }
+        var totalSeconds = Math.max(0, Math.floor((activeDraw.getTime() - now.getTime()) / 1000));
         var d = Math.floor(totalSeconds / 86400);
         var h = Math.floor((totalSeconds % 86400) / 3600);
         var m = Math.floor((totalSeconds % 3600) / 60);
@@ -564,20 +606,10 @@
         if (hours) hours.textContent = pad(h);
         if (minutes) minutes.textContent = pad(m);
         if (seconds) seconds.textContent = pad(s);
-        countdown.classList.toggle('countdown-ended', totalSeconds === 0);
+        countdown.classList.remove('countdown-ended');
       }
       render();
       window.setInterval(render, 1000);
-    });
-
-    // Local draw time, once per page (shared between hidden and visible copies).
-    document.querySelectorAll('[data-local-draw-time]').forEach(function (localTime) {
-      localTime.textContent = new Intl.DateTimeFormat(undefined, {
-        dateStyle: 'medium', timeStyle: 'short'
-      }).format(new Date(targetUtc));
-    });
-    document.querySelectorAll('[data-local-timezone]').forEach(function (timezone) {
-      timezone.textContent = (Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local time').replace(/_/g, ' ');
     });
   }
 
