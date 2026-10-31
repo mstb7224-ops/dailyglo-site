@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Assistant - DailyGlo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/assistant.css">
+</head>
+<body>
+<div class="assistant-bg"><span></span><span></span><span></span></div>
+<header class="assistant-nav">
+  <a class="brand" href="index.html"><img src="images/dailyglo_logo.png" alt="DailyGlo Lottery Agency"></a>
+  <nav><a href="index.html">Home</a><a href="pages/register.html">Register</a><a href="pages/login.html">Login</a></nav>
+</header>
+<main class="assistant-shell">
+  <section class="assistant-card" aria-labelledby="assistant-title">
+    <div class="assistant-icon" aria-hidden="true">◉</div>
+    <p class="eyebrow">DAILYGLO SUPPORT</p>
+    <h1 id="assistant-title">Talk to DailyGlo Assistant</h1>
+    <p class="lead">Get quick help with registration, Iqama upload, login and payment instructions.</p>
+    <div class="status-pill"><span class="status-dot"></span><span id="availability">Voice assistant setup is ready</span></div>
+    <button id="startVoice" class="start-button" type="button">Start voice assistant</button>
+    <p id="statusMessage" class="status-message" role="status">Your microphone will be requested only after you start a call.</p>
+    <div class="quick-links">
+      <a href="pages/register.html"><strong>Register now</strong><span>Complete the secure form</span></a>
+      <a href="pages/login.html"><strong>Member login</strong><span>Access your account</span></a>
+    </div>
+    <div class="safety-note"><strong>Security notice</strong><p>Never share your password, OTP, bKash PIN, bank PIN or Iqama photo through voice. Use the secure website forms for personal information.</p></div>
+  </section>
+</main>
+<script src="js/assistant.js"></script>
+</body>
+</html>
