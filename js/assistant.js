@@ -79,10 +79,26 @@
       body: JSON.stringify({ agent_id: AGENT_ID })
     });
     var data = await response.json().catch(function () { return {}; });
-    if (!response.ok || !data.access_token) throw new Error(data.error || 'Voice service is not configured yet.');
+    if (!response.ok || !data.access_token) {
+      var tokenError = new Error(data.error || 'The secure voice token could not be created.');
+      tokenError.stage = 'token';
+      throw tokenError;
+    }
+    availability.textContent = 'Secure token verified';
 
-    micStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } });
-    audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 44100 });
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } });
+    } catch (microphoneError) {
+      microphoneError.stage = 'microphone';
+      throw microphoneError;
+    }
+    try {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 44100 });
+      await audioContext.resume();
+    } catch (audioError) {
+      audioError.stage = 'audio';
+      throw audioError;
+    }
     socket = new WebSocket('wss://api.cartesia.ai/v1/agents/websocket/' + encodeURIComponent(AGENT_ID) + '?access_token=' + encodeURIComponent(data.access_token) + '&cartesia_version=2026-08-14');
     socket.onopen = function () {
       socket.send(JSON.stringify({ type: 'session_create', audio: { input_format: 'pcm_44100', output_delivery: 'speaking_pace' } }));
@@ -121,9 +137,21 @@
   button.addEventListener('click', function () {
     if (socket && socket.readyState < 2) { stopVoice(); return; }
     startVoice().catch(function (error) {
+      var stage = error && error.stage;
       stopVoice();
-      setMessage('Voice assistant is displayed and ready, but the Cartesia API key still needs to be added on the server.', true);
-      availability.textContent = 'Waiting for secure API key';
+      if (stage === 'token') {
+        setMessage('Secure voice token failed. Please check the Cartesia API key and Supabase Edge Function secret configuration.', true);
+        availability.textContent = 'Token service error';
+      } else if (stage === 'microphone' || (error && error.name === 'NotAllowedError')) {
+        setMessage('Microphone permission was blocked. Allow microphone access for dailyglo.online, then try again.', true);
+        availability.textContent = 'Microphone permission needed';
+      } else if (stage === 'audio') {
+        setMessage('This browser could not start audio. Try Chrome or Safari and allow microphone access.', true);
+        availability.textContent = 'Browser audio unavailable';
+      } else {
+        setMessage('Voice connection failed before the call started. Please check your network or try again.', true);
+        availability.textContent = 'Voice connection error';
+      }
     });
   });
 }());
