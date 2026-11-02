@@ -31,5 +31,13 @@ Deno.serve(async (req: Request) => {
     console.error("Cartesia token request failed", cartesiaResponse.status);
     return Response.json({ error: "Cartesia token request failed" }, { status: 502, headers: corsHeaders });
   }
-  return Response.json({ access_token: result.access_token, agent_id: agentId, expires_in: result.expires_in || 300 }, { headers: corsHeaders });
+
+  // Keep the provider token server-side except for the intended short-lived browser response.
+  const accessToken = result.access_token || result.token || result.accessToken || result.data?.access_token || result.data?.token;
+  if (typeof accessToken !== "string" || accessToken.length < 20) {
+    console.error("Cartesia token response did not contain a usable token", Object.keys(result));
+    return Response.json({ error: "Cartesia returned an invalid token response" }, { status: 502, headers: corsHeaders });
+  }
+
+  return Response.json({ access_token: accessToken, agent_id: agentId, expires_in: result.expires_in || result.data?.expires_in || 300 }, { headers: corsHeaders });
 });
