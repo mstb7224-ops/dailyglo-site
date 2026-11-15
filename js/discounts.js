@@ -3,7 +3,6 @@
 
   var BASE_AMOUNT = 980;
   var DEFAULT_CODES = {
-    SPECIAL5: { percent: 90, label: '90% off' },
     PRIME75: { percent: 75, label: '75% off' }
   };
   var activeCodes = Object.assign({}, DEFAULT_CODES);
