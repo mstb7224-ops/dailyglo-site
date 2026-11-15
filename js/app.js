@@ -123,6 +123,7 @@
     var memberResult = await client.from('members').upsert([{
       id: user.id,
       email: values.email,
+      mobile: values.mobile,
       user_type: 'free'
     }], { onConflict: 'email' });
     if (memberResult.error) throw memberResult.error;
@@ -421,9 +422,17 @@
       setButtonState(button, true, 'Signing in...');
       getSupabaseClient().then(function (client) {
         var loginId = byId('loginId').value.trim();
-        return client.auth.signInWithPassword({
-          email: loginId.indexOf('@') !== -1 ? loginId : authEmailForMobile(loginId),
-          password: byId('password').value
+        var emailPromise = loginId.indexOf('@') !== -1
+          ? Promise.resolve(loginId)
+          : client.rpc('resolve_login_email', { p_mobile: loginId }).then(function (lookup) {
+            if (lookup.error) throw lookup.error;
+            return lookup.data || authEmailForMobile(loginId);
+          });
+        return emailPromise.then(function (email) {
+          return client.auth.signInWithPassword({
+            email: email,
+            password: byId('password').value
+          });
         });
       }).then(function (result) {
         if (result.error) throw result.error;
