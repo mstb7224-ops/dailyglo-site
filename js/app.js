@@ -382,7 +382,7 @@
       finalAmount.textContent = result.finalAmount + ' SAR';
       if (remainingAmount && amountPaidInput) remainingAmount.textContent = Math.max(0, Number((result.finalAmount - Number(amountPaidInput.value || 0)).toFixed(2))) + ' SAR';
       if (showMessage) {
-        message.textContent = result.valid ? (result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') : (result.requestedCode === 'SPECIAL5' ? 'SPECIAL5 is currently fully redeemed. PRIME75 (75% off) is available.' : 'Invalid code. Try SPECIAL5 (90% off) or PRIME75 (75% off).');
+        message.textContent = result.valid ? (result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') : (result.requestedCode === 'SPECIAL5' ? 'Thank you for your interest in SPECIAL5. This 90% offer was for the first five customers, and all five places have now been claimed. PRIME75 (75% off) is available instead.' : 'Invalid code. PRIME75 (75% off) is currently available. SPECIAL5 was limited to the first five customers and is now closed.');
         message.className = 'discount-message ' + (result.valid ? 'success' : 'error');
       }
       return result;
@@ -537,7 +537,7 @@
           if (byId('discountAmount')) byId('discountAmount').textContent = '-0 SAR';
           if (byId('finalAmount')) byId('finalAmount').textContent = '980 SAR';
           if (discountInput) discountInput.value = '';
-          if (byId('discountMessage')) { byId('discountMessage').textContent = 'Try SPECIAL5 (90% off) or PRIME75 (75% off).'; byId('discountMessage').className = 'discount-message'; }
+          if (byId('discountMessage')) { byId('discountMessage').textContent = 'PRIME75 (75% off) is currently available. SPECIAL5 was limited to the first five customers and is now closed.'; byId('discountMessage').className = 'discount-message'; }
         }
       }).catch(function (error) { handleApiError(form, error); });
     });

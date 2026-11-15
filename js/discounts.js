@@ -19,7 +19,7 @@
     if (normalized === 'SPECIAL5' && !offer && activeCodes.PRIME75) {
       offer = activeCodes.PRIME75;
       normalized = 'PRIME75';
-      fallbackMessage = 'SPECIAL5 is currently fully redeemed. PRIME75 (75% off) has been applied.';
+      fallbackMessage = 'Thank you for your interest in SPECIAL5. This 90% offer was reserved for the first five customers, and all five places have now been claimed. The offer is no longer active, so PRIME75 (75% off) has been applied instead.';
     }
     var discount = offer ? Number((BASE_AMOUNT * offer.percent / 100).toFixed(2)) : 0;
     var finalAmount = Number((BASE_AMOUNT - discount).toFixed(2));
