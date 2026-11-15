@@ -50,9 +50,8 @@ create policy "Admins can update discount codes"
 
 insert into public.discount_codes (code, percent_off, active)
 values
-  ('DAILYGLO75', 75, true),
-  ('DAILYGLO60', 60, true),
-  ('SPECIAL5', 90, true)
+  ('SPECIAL5', 90, false),
+  ('PRIME75', 75, true)
 on conflict (code) do update set
   percent_off = excluded.percent_off,
   active = excluded.active;

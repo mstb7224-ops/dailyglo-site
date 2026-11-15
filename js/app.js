@@ -375,7 +375,7 @@
       discountAmount.textContent = '-' + result.discountAmount + ' SAR';
       finalAmount.textContent = result.finalAmount + ' SAR';
       if (showMessage) {
-        message.textContent = result.valid ? result.label + ' applied. You save ' + result.discountAmount + ' SAR.' : 'Invalid code. Try DAILYGLO75 or DAILYGLO60.';
+        message.textContent = result.valid ? (result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') : (result.requestedCode === 'SPECIAL5' ? 'SPECIAL5 is currently fully redeemed. PRIME75 (75% off) is available.' : 'Invalid code. Try SPECIAL5 (90% off) or PRIME75 (75% off).');
         message.className = 'discount-message ' + (result.valid ? 'success' : 'error');
       }
       return result;
@@ -479,7 +479,7 @@
       var isBank = methodValue !== 'bkash';
       var transaction = byId('transactionId');
       var screenshot = byId('screenshotFile');
-      var discount = window.DailyGloDiscounts ? window.DailyGloDiscounts.calculate(discountInput ? discountInput.value : '') : { valid: false, code: '', percent: 0, finalAmount: 750 };
+      var discount = window.DailyGloDiscounts ? window.DailyGloDiscounts.calculate(discountInput ? discountInput.value : '') : { valid: false, code: '', percent: 0, finalAmount: 980 };
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -494,7 +494,7 @@
       var methodMap = { bkash: 'bkash', alrajhi: 'al_rajhi_bank', bangkok_bank: 'bangkok_bank' };
       var data = new FormData();
       data.append('method', methodMap[methodValue] || 'bkash');
-      data.append('requiredAmount', '750');
+      data.append('requiredAmount', '980');
       data.append('finalAmount', String(discount.finalAmount));
       data.append('discountCode', discount.code);
       data.append('discountPercent', String(discount.percent));
@@ -512,11 +512,11 @@
           defaultMethod.dispatchEvent(new Event('change'));
         }
         if (window.DailyGloDiscounts && byId('amount')) {
-          byId('amount').value = '750';
+          byId('amount').value = '980';
           if (byId('discountAmount')) byId('discountAmount').textContent = '-0 SAR';
-          if (byId('finalAmount')) byId('finalAmount').textContent = '750 SAR';
+          if (byId('finalAmount')) byId('finalAmount').textContent = '980 SAR';
           if (discountInput) discountInput.value = '';
-          if (byId('discountMessage')) { byId('discountMessage').textContent = 'Try DAILYGLO75 or DAILYGLO60.'; byId('discountMessage').className = 'discount-message'; }
+          if (byId('discountMessage')) { byId('discountMessage').textContent = 'Try SPECIAL5 (90% off) or PRIME75 (75% off).'; byId('discountMessage').className = 'discount-message'; }
         }
       }).catch(function (error) { handleApiError(form, error); });
     });

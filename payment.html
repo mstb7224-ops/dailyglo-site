@@ -49,7 +49,7 @@
                 <p class="text-slate-300">Account Number: <span class="text-white">077080010006086435018</span></p>
                 <p class="text-slate-300">IBAN: <span class="text-white">SA9380000867608016435018</span></p>
                 <p class="text-slate-300">SWIFT: <span class="text-white">RJHISARI</span></p>
-                <p class="text-xs text-slate-400 mt-1">Required Amount: 750 SAR</p>
+                <p class="text-xs text-slate-400 mt-1">Required Amount: 980 SAR</p>
             </div>
             <div id="bangkok_bankDetails" class="payment-details hidden bg-slate-700 p-4 rounded-lg border-l-4 border-blue-500">
                 <p class="text-sm font-semibold text-blue-300">Kasikornbank (KBank)</p>
@@ -57,7 +57,7 @@
                 <p class="text-slate-300">Account Number: <span class="text-white">2596356673893939</span></p>
                 <p class="text-slate-300">Branch: <span class="text-white">Nonthaburi</span></p>
                 <p class="text-slate-300">SWIFT: <span class="text-white">KASITHBKXXX</span></p>
-                <p class="text-xs text-slate-400 mt-1">Required Amount: 750 SAR</p>
+                <p class="text-xs text-slate-400 mt-1">Required Amount: 980 SAR</p>
             </div>
 
             <div>
@@ -75,20 +75,20 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-1" for="amount">Amount to pay</label>
-                <input type="number" id="amount" required min="0" max="750" step="0.01" value="750" readonly class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" aria-describedby="amountHint">
-                <p id="amountHint" class="text-xs text-slate-500 mt-1">Standard membership fee: 750 SAR.</p>
+                <input type="number" id="amount" required min="0" max="980" step="0.01" value="980" readonly class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" aria-describedby="amountHint">
+                <p id="amountHint" class="text-xs text-slate-500 mt-1">Standard membership fee: 980 SAR.</p>
             </div>
 
             <div class="rounded-xl border border-amber-300/20 bg-amber-300/5 p-4">
                 <div class="mb-2 flex items-center justify-between gap-3"><label class="text-sm font-semibold text-slate-200" for="discountCode">Have a discount code?</label><span class="text-xs font-medium text-amber-200">Optional</span></div>
                 <div class="flex gap-2"><input type="text" id="discountCode" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white uppercase placeholder:normal-case focus:border-amber-300 focus:outline-none" placeholder="Enter promo code"><button type="button" id="applyDiscountBtn" class="rounded-lg border border-amber-300/40 px-4 py-2.5 text-sm font-semibold text-amber-200 transition hover:bg-amber-300/10">Apply</button></div>
-                <p id="discountMessage" class="mt-2 text-xs text-slate-400" role="status" aria-live="polite">Try DAILYGLO75 or DAILYGLO60.</p>
+                <p id="discountMessage" class="mt-2 text-xs text-slate-400" role="status" aria-live="polite">Try SPECIAL5 (90% off) or PRIME75 (75% off).</p>
             </div>
 
             <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-4 text-sm">
-                <div class="flex items-center justify-between text-slate-400"><span>Original fee</span><span id="originalAmount">750 SAR</span></div>
+                <div class="flex items-center justify-between text-slate-400"><span>Original fee</span><span id="originalAmount">980 SAR</span></div>
                 <div class="mt-2 flex items-center justify-between text-emerald-300"><span>Discount</span><span id="discountAmount">-0 SAR</span></div>
-                <div class="mt-3 flex items-center justify-between border-t border-slate-700 pt-3 font-bold text-white"><span>Final amount</span><span id="finalAmount" class="text-lg text-blue-300">750 SAR</span></div>
+                <div class="mt-3 flex items-center justify-between border-t border-slate-700 pt-3 font-bold text-white"><span>Final amount</span><span id="finalAmount" class="text-lg text-blue-300">980 SAR</span></div>
             </div>
 
             <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition-all transform active:scale-95 shadow-lg">Submit Payment</button>
@@ -124,7 +124,7 @@
             discountAmount.textContent = '-' + result.discountAmount + ' SAR';
             finalAmount.textContent = result.finalAmount + ' SAR';
             if (showMessage) {
-                discountMessage.textContent = result.valid ? result.label + ' applied. You save ' + result.discountAmount + ' SAR.' : 'Invalid code. Try DAILYGLO75 or DAILYGLO60.';
+                discountMessage.textContent = result.valid ? (result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') : (result.requestedCode === 'SPECIAL5' ? 'SPECIAL5 is currently fully redeemed. PRIME75 (75% off) is available.' : 'Invalid code. Try SPECIAL5 (90% off) or PRIME75 (75% off).');
                 discountMessage.className = 'mt-2 text-xs ' + (result.valid ? 'text-emerald-300' : 'text-red-300');
             }
             return result;
@@ -190,7 +190,7 @@
             }
         });
         updatePaymentDetails();
-        updateDiscountSummary(false);
+        window.DailyGloDiscounts.load().then(function () { updateDiscountSummary(false); });
 
         paymentForm.addEventListener('submit', async function (event) {
             event.preventDefault();
