@@ -370,7 +370,9 @@
     var message = byId('discountMessage');
     var discountAmount = byId('discountAmount');
     var finalAmount = byId('finalAmount');
+    var remainingAmount = byId('remainingAmount');
     var amountInput = byId('amount');
+    var amountPaidInput = byId('amountPaid');
     if (!codeInput || !applyButton || !message || !discountAmount || !finalAmount || !amountInput || !window.DailyGloDiscounts) return;
 
     function update(showMessage) {
@@ -378,6 +380,7 @@
       amountInput.value = result.finalAmount;
       discountAmount.textContent = '-' + result.discountAmount + ' SAR';
       finalAmount.textContent = result.finalAmount + ' SAR';
+      if (remainingAmount && amountPaidInput) remainingAmount.textContent = Math.max(0, Number((result.finalAmount - Number(amountPaidInput.value || 0)).toFixed(2))) + ' SAR';
       if (showMessage) {
         message.textContent = result.valid ? (result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') : (result.requestedCode === 'SPECIAL5' ? 'SPECIAL5 is currently fully redeemed. PRIME75 (75% off) is available.' : 'Invalid code. Try SPECIAL5 (90% off) or PRIME75 (75% off).');
         message.className = 'discount-message ' + (result.valid ? 'success' : 'error');
@@ -386,6 +389,7 @@
     }
 
     applyButton.addEventListener('click', function () { update(true); });
+    if (amountPaidInput) amountPaidInput.addEventListener('input', function () { update(false); });
     codeInput.addEventListener('keydown', function (event) {
       if (event.key === 'Enter') { event.preventDefault(); update(true); }
     });
@@ -484,12 +488,18 @@
       var transaction = byId('transactionId');
       var screenshot = byId('screenshotFile');
       var discount = window.DailyGloDiscounts ? window.DailyGloDiscounts.calculate(discountInput ? discountInput.value : '') : { valid: false, code: '', percent: 0, finalAmount: 980 };
+      var amountPaid = Number((byId('amountPaid') && byId('amountPaid').value) || 0);
+      var remaining = Number((discount.finalAmount - amountPaid).toFixed(2));
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
       if (discountInput && discountInput.value.trim() && !discount.valid) {
         showStatus(status, 'The discount code is invalid.', 'error');
+        return;
+      }
+      if (!Number.isFinite(amountPaid) || amountPaid <= 0) {
+        showStatus(status, 'Enter the amount you actually sent.', 'error');
         return;
       }
       if (!transaction || !/^[0-9]{4}$/.test(transaction.value.trim())) {
@@ -504,6 +514,9 @@
       data.append('method', methodMap[methodValue] || 'bkash');
       data.append('requiredAmount', '980');
       data.append('finalAmount', String(discount.finalAmount));
+      data.append('amountPaid', String(amountPaid));
+      data.append('remainingAmount', String(Math.max(0, remaining)));
+      data.append('paymentStatus', remaining > 0 ? 'underpaid' : 'pending_review');
       data.append('discountCode', discount.code);
       data.append('discountPercent', String(discount.percent));
       data.append('transactionReference', (transaction && transaction.value.trim()) || '');
