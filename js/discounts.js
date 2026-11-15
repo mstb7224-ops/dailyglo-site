@@ -3,7 +3,7 @@
 
   var BASE_AMOUNT = 980;
   var DEFAULT_CODES = {
-    PRIME75: { percent: 75, label: '75% off' }
+    PRIME75: { percent: 75, label: '75% off', expiresAt: '2026-11-17T17:59:59Z' }
   };
   var activeCodes = Object.assign({}, DEFAULT_CODES);
   var loadedFromDatabase = false;
@@ -29,6 +29,7 @@
       percent: offer ? offer.percent : 0,
       label: fallbackMessage || (offer ? offer.label : 'No discount'),
       message: fallbackMessage,
+      expiresAt: offer && offer.expiresAt ? offer.expiresAt : '',
       baseAmount: BASE_AMOUNT,
       discountAmount: discount,
       finalAmount: finalAmount,
@@ -57,7 +58,7 @@
           var code = normalise(row.code);
           var percent = Number(row.percent_off);
           if (!code || !Number.isFinite(percent) || percent <= 0 || percent > 100) return;
-          databaseCodes[code] = { percent: percent, label: percent + '% off' };
+          databaseCodes[code] = { percent: percent, label: percent + '% off', expiresAt: row.expires_at || '' };
         });
         activeCodes = databaseCodes;
         loadedFromDatabase = true;

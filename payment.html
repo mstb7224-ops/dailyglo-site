@@ -85,7 +85,7 @@
             <div class="rounded-xl border border-amber-300/20 bg-amber-300/5 p-4">
                 <div class="mb-2 flex items-center justify-between gap-3"><label class="text-sm font-semibold text-slate-200" for="discountCode">Have a discount code?</label><span class="text-xs font-medium text-amber-200">Optional</span></div>
                 <div class="flex gap-2"><input type="text" id="discountCode" maxlength="32" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-600 bg-slate-900 px-3 py-2.5 text-sm text-white uppercase placeholder:normal-case focus:border-amber-300 focus:outline-none" placeholder="Enter promo code"><button type="button" id="applyDiscountBtn" class="rounded-lg border border-amber-300/40 px-4 py-2.5 text-sm font-semibold text-amber-200 transition hover:bg-amber-300/10">Apply</button></div>
-                <p id="discountMessage" class="mt-2 text-xs text-slate-400" role="status" aria-live="polite">PRIME75 (75% off) is currently available. SPECIAL5 was limited to the first five customers and is now closed.</p>
+                <p id="discountMessage" class="mt-2 text-xs text-slate-400" role="status" aria-live="polite">PRIME75 (75% off) is currently available until 17 November 2026. SPECIAL5 was limited to the first five customers and is now closed.</p>
             </div>
 
             <div class="rounded-xl border border-slate-700 bg-slate-900/60 p-4 text-sm">
@@ -98,7 +98,7 @@
         </form>
 
         <div id="statusMsg" class="mt-4 text-center text-sm hidden" role="status" aria-live="polite"></div>
-        <p class="text-xs text-slate-500 text-center mt-5">Only the current active offer is valid. SPECIAL5 90% is expired; PRIME75 75% is currently available. A lower payment is recorded as underpaid until the remaining amount is received.</p>
+        <p class="text-xs text-slate-500 text-center mt-5">Only the current active offer is valid. SPECIAL5 90% is expired; PRIME75 75% is currently available until 17 November 2026. A lower payment is recorded as underpaid until the remaining amount is received.</p>
     </div>
 
     <script>
@@ -131,7 +131,7 @@
             const paid = Number(amountPaidInput.value || 0);
             remainingAmount.textContent = Math.max(0, Number((result.finalAmount - paid).toFixed(2))) + ' SAR';
             if (showMessage) {
-                discountMessage.textContent = result.valid ? (result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') : (result.requestedCode === 'SPECIAL5' ? 'Thank you for your interest in SPECIAL5. This 90% offer was for the first five customers, and all five places have now been claimed. PRIME75 (75% off) is available instead.' : 'Invalid code. PRIME75 (75% off) is currently available. SPECIAL5 was limited to the first five customers and is now closed.');
+                discountMessage.textContent = result.valid ? ((result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') + (result.expiresAt ? ' This offer is valid until 17 November 2026.' : '')) : (result.requestedCode === 'SPECIAL5' ? 'Thank you for your interest in SPECIAL5. This 90% offer was for the first five customers, and all five places have now been claimed. PRIME75 (75% off) is available instead.' : 'Invalid code. PRIME75 (75% off) is currently available until 17 November 2026. SPECIAL5 was limited to the first five customers and is now closed.');
                 discountMessage.className = 'mt-2 text-xs ' + (result.valid ? 'text-emerald-300' : 'text-red-300');
             }
             return result;

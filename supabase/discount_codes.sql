@@ -48,15 +48,16 @@ create policy "Admins can update discount codes"
   using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
   with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
-insert into public.discount_codes (code, percent_off, active, max_uses, used_count)
+insert into public.discount_codes (code, percent_off, active, max_uses, used_count, expires_at)
 values
-  ('SPECIAL5', 90, false, 5, 5),
-  ('PRIME75', 75, true, null, 0)
+  ('SPECIAL5', 90, false, 5, 5, null),
+  ('PRIME75', 75, true, null, 0, '2026-11-17 17:59:59+00')
 on conflict (code) do update set
   percent_off = excluded.percent_off,
   active = excluded.active,
   max_uses = excluded.max_uses,
-  used_count = excluded.used_count;
+  used_count = excluded.used_count,
+  expires_at = excluded.expires_at;
 
 -- Important: do not let the browser increment used_count or set payment amounts.
 -- Final amount and one-time-use enforcement should be performed by a trusted
