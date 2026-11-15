@@ -28,11 +28,11 @@
                     </label>
                     <label class="payment-option group flex cursor-pointer flex-col gap-3 rounded-xl border border-slate-600 bg-slate-700 p-4 transition hover:-translate-y-0.5 hover:border-blue-300">
                         <span class="flex items-center justify-between"><span class="text-2xl" aria-hidden="true">🏦</span><input type="radio" name="paymentMethod" value="alrajhi" class="accent-blue-500"></span>
-                        <span><strong class="block text-sm">Al Rajhi Bank</strong><small class="mt-1 block text-xs text-slate-400">Reference + screenshot</small></span>
+                        <span><strong class="block text-sm">Al Rajhi Bank</strong><small class="mt-1 block text-xs text-slate-400">Last 4 digits · screenshot optional</small></span>
                     </label>
                     <label class="payment-option group flex cursor-pointer flex-col gap-3 rounded-xl border border-slate-600 bg-slate-700 p-4 transition hover:-translate-y-0.5 hover:border-blue-300">
                         <span class="flex items-center justify-between"><span class="text-2xl" aria-hidden="true">🏦</span><input type="radio" name="paymentMethod" value="bangkok_bank" class="accent-blue-500"></span>
-                        <span><strong class="block text-sm">Kasikornbank</strong><small class="mt-1 block text-xs text-slate-400">Reference + screenshot</small></span>
+                        <span><strong class="block text-sm">Kasikornbank</strong><small class="mt-1 block text-xs text-slate-400">Last 4 digits · screenshot optional</small></span>
                     </label>
                 </div>
             </fieldset>
@@ -62,14 +62,14 @@
 
             <div>
                 <label class="block text-sm font-medium text-slate-300 mb-1" for="txId">bKash Transaction ID / TrxID</label>
-                <input type="text" id="txId" required class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" placeholder="Enter bKash TrxID">
+                <input type="text" id="txId" required class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white focus:outline-none focus:border-blue-500 transition-all" placeholder="Enter last 4 digits" inputmode="numeric" minlength="4" maxlength="4" pattern="[0-9]{4}" autocomplete="off">
                 <p class="text-xs text-slate-500 mt-1">Never enter your bKash PIN or OTP.</p>
             </div>
 
             <div id="screenshotGroup" class="hidden">
-                <label class="block text-sm font-medium text-slate-300 mb-1" for="screenshotFile">Bank Payment Screenshot</label>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="screenshotFile">Bank Payment Screenshot <span class="text-slate-400">(optional)</span></label>
                 <input type="file" id="screenshotFile" accept="image/jpeg,image/png,image/webp" disabled class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-600 text-white">
-                <p class="text-xs text-slate-500 mt-1">Required for Al Rajhi Bank and Kasikornbank. JPG, PNG, or WebP up to 5MB.</p>
+                <p class="text-xs text-slate-500 mt-1">Optional for bank payments. If provided, JPG, PNG, or WebP up to 5MB.</p>
                 <img id="filePreview" class="mt-3 max-h-48 rounded-lg hidden" alt="Payment screenshot preview">
             </div>
 
@@ -140,11 +140,11 @@
                 const input = option.querySelector('input');
                 option.classList.toggle('border-blue-400', input && input.checked);
             });
-            document.querySelector('label[for="txId"]').textContent = isBank ? 'Bank Transaction Reference' : 'bKash Transaction ID / TrxID';
-            document.getElementById('txId').placeholder = isBank ? 'Enter bank transfer reference' : 'Enter bKash TrxID';
-            document.querySelector('#txId + p').textContent = isBank ? 'Enter the reference shown on your bank transfer.' : 'Never enter your bKash PIN or OTP.';
+            document.querySelector('label[for="txId"]').textContent = isBank ? 'Bank Reference (last 4 digits)' : 'bKash Reference (last 4 digits)';
+            document.getElementById('txId').placeholder = 'Enter last 4 digits';
+            document.querySelector('#txId + p').textContent = isBank ? 'Enter only the last 4 digits of the bank reference. Screenshot is optional.' : 'Enter only the last 4 digits of the bKash TrxID. Never enter your bKash PIN or OTP.';
             screenshotGroup.classList.toggle('hidden', !isBank);
-            screenshotFile.required = isBank;
+            screenshotFile.required = false;
             screenshotFile.disabled = !isBank;
             if (!isBank) {
                 screenshotFile.value = '';
@@ -158,7 +158,7 @@
         }
 
         function validateBankScreenshot(file) {
-            if (!file) throw new Error('Please upload the bank payment screenshot.');
+            if (!file) return;
             if (file.size > MAX_SCREENSHOT_SIZE) throw new Error('The screenshot must be 5 MB or smaller.');
             if (['image/jpeg', 'image/png', 'image/webp'].indexOf(file.type) === -1) {
                 throw new Error('Please upload a JPG, PNG, or WebP screenshot.');
@@ -207,8 +207,8 @@
 
             try {
                 if (discountCodeInput.value.trim() && !discount.valid) throw new Error('The discount code is invalid.');
-                if (!txId) throw new Error(isBank ? 'Please enter the bank transaction reference.' : 'Please enter the bKash TrxID.');
-                if (isBank) validateBankScreenshot(screenshotFile.files[0]);
+                if (!/^[0-9]{4}$/.test(txId)) throw new Error(isBank ? 'Enter only the last 4 digits of the bank reference.' : 'Enter only the last 4 digits of the bKash TrxID.');
+                if (isBank && screenshotFile.files.length) validateBankScreenshot(screenshotFile.files[0]);
                 if (!window.supabase || typeof window.supabase.createClient !== 'function') {
                     throw new Error('Supabase SDK could not be loaded.');
                 }
@@ -220,7 +220,7 @@
                 if (!user) throw new Error('Please log in before submitting a payment.');
 
                 let proofSuffix = '';
-                if (isBank) {
+                if (isBank && screenshotFile.files.length) {
                     const randomId = window.crypto && typeof window.crypto.randomUUID === 'function' ? window.crypto.randomUUID() : String(Date.now());
                     uploadedPath = 'iqama/' + user.id + '/payment-' + randomId + '.' + getFileExtension(screenshotFile.files[0]);
                     const uploadResult = await supabaseClient.storage.from(PAYMENT_BUCKET).upload(uploadedPath, screenshotFile.files[0], {

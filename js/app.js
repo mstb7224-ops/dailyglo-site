@@ -337,17 +337,21 @@
       var screenshot = byId('screenshotFile');
       if (transaction) {
         transaction.required = true;
-        transaction.placeholder = isBank ? 'Enter bank transfer reference' : 'Enter bKash TrxID';
+        transaction.placeholder = 'Enter last 4 digits';
+        transaction.inputMode = 'numeric';
+        transaction.minLength = 4;
+        transaction.maxLength = 4;
+        transaction.pattern = '[0-9]{4}';
       }
       if (transactionLabel) {
-        transactionLabel.innerHTML = (isBank ? 'Bank Transaction Reference' : 'bKash Transaction ID / TrxID') + ' <span class="required">*</span>';
+        transactionLabel.innerHTML = (isBank ? 'Bank Reference (last 4 digits)' : 'bKash Reference (last 4 digits)') + ' <span class="required">*</span>';
       }
       if (transactionHint) {
-        transactionHint.textContent = isBank ? 'Enter the reference shown on your bank transfer.' : 'Never enter your bKash PIN or OTP.';
+        transactionHint.textContent = isBank ? 'Enter only the last 4 digits of the bank reference. Screenshot is optional.' : 'Enter only the last 4 digits of the bKash TrxID. Never enter your bKash PIN or OTP.';
       }
       if (screenshotGroup) screenshotGroup.style.display = isBank ? 'block' : 'none';
       if (screenshot) {
-        screenshot.required = isBank;
+        screenshot.required = false;
         screenshot.disabled = !isBank;
         if (!isBank) screenshot.value = '';
       }
@@ -488,7 +492,11 @@
         showStatus(status, 'The discount code is invalid.', 'error');
         return;
       }
-      if (isBank && !validateFile(screenshot, status, 'Payment screenshot')) return;
+      if (!transaction || !/^[0-9]{4}$/.test(transaction.value.trim())) {
+        showStatus(status, isBank ? 'Enter only the last 4 digits of the bank reference.' : 'Enter only the last 4 digits of the bKash TrxID.', 'error');
+        return;
+      }
+      if (isBank && screenshot && screenshot.files && screenshot.files.length && !validateFile(screenshot, status, 'Payment screenshot')) return;
       var button = byId('submitBtn');
       setButtonState(button, true, isBank ? 'Uploading...' : 'Submitting...');
       var methodMap = { bkash: 'bkash', alrajhi: 'al_rajhi_bank', bangkok_bank: 'bangkok_bank' };
