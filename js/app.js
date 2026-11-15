@@ -77,7 +77,7 @@
       return 'Supabase rejected the request because the Storage or database RLS policy is not configured for this user.';
     }
     if (lower.indexOf('email not confirmed') !== -1 || lower.indexOf('confirm your email') !== -1) {
-      return 'Your account was created, but email confirmation is required before the Iqama can be uploaded. Confirm your email and try again.';
+      return 'Your account was created, but sign-in confirmation is enabled. Please contact support to activate the account.';
     }
     if (lower.indexOf('already registered') !== -1 || lower.indexOf('already exists') !== -1) {
       return 'An account with this email already exists. Please log in instead.';
@@ -85,16 +85,21 @@
     return message;
   }
 
-  async function registerWithSupabase(form, file) {
+  function authEmailForMobile(mobile) {
+    var digits = String(mobile || '').replace(/\D/g, '');
+    return (digits || 'member-' + Date.now()) + '@members.dailyglo.local';
+  }
+
+  async function registerWithSupabase(form) {
     var client = await getSupabaseClient();
     var values = {
       full_name: byId('fullName').value.trim(),
-      email: byId('email').value.trim().toLowerCase(),
       mobile: byId('mobile').value.trim(),
       city: byId('city').value.trim(),
       country: byId('country').value,
       password: byId('password').value
     };
+    values.email = authEmailForMobile(values.mobile);
 
     var signUpResult = await client.auth.signUp({
       email: values.email,
@@ -115,47 +120,24 @@
     }
 
     var user = signUpResult.data.user;
-    var uploadedPath = '';
-    try {
-      var extension = getFileExtension(file);
-      var randomId = window.crypto && typeof window.crypto.randomUUID === 'function'
-        ? window.crypto.randomUUID()
-        : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
-      uploadedPath = 'iqama/' + user.id + '/' + randomId + '.' + extension;
+    var memberResult = await client.from('members').upsert([{
+      id: user.id,
+      email: values.email,
+      user_type: 'free'
+    }], { onConflict: 'email' });
+    if (memberResult.error) throw memberResult.error;
 
-      var uploadResult = await client.storage.from(SUPABASE_BUCKET).upload(uploadedPath, file, {
-        cacheControl: '3600',
-        contentType: file.type,
-        upsert: false
-      });
-      if (uploadResult.error) throw uploadResult.error;
-
-      var memberResult = await client.from('members').upsert([{
-        id: user.id,
-        email: values.email,
-        user_type: 'free'
-      }], { onConflict: 'email' });
-      if (memberResult.error) throw memberResult.error;
-
-      var profileResult = await client.auth.updateUser({
-        data: {
-          full_name: values.full_name,
-          mobile: values.mobile,
-          city: values.city,
-          country: values.country,
-          iqama_path: uploadedPath,
-          iqama_uploaded_at: new Date().toISOString()
-        }
-      });
-      if (profileResult.error) throw profileResult.error;
-    } catch (error) {
-      if (uploadedPath) {
-        await client.storage.from(SUPABASE_BUCKET).remove([uploadedPath]).catch(function () {});
+    var profileResult = await client.auth.updateUser({
+      data: {
+        full_name: values.full_name,
+        mobile: values.mobile,
+        city: values.city,
+        country: values.country
       }
-      throw error;
-    }
+    });
+    if (profileResult.error) throw profileResult.error;
 
-    return { user: user, iqamaPath: uploadedPath };
+    return { user: user };
   }
 
   function byId(id) {
@@ -404,7 +386,6 @@
     var form = byId('regForm');
     if (!form) return;
     var status = getStatusElement(form);
-    bindFileInput('iqamaFile', 'filePreview', '.file-text strong', status, 'Iqama image');
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       if (!form.checkValidity()) {
@@ -412,18 +393,12 @@
         form.reportValidity();
         return;
       }
-      var input = byId('iqamaFile');
-      if (!validateIqamaFile(input, status)) return;
       var button = byId('submitBtn');
-      setButtonState(button, true, 'Uploading...');
-      registerWithSupabase(form, input.files[0]).then(function () {
+      setButtonState(button, true, 'Registering...');
+      registerWithSupabase(form).then(function () {
         setButtonState(button, false);
-        showStatus(status, 'Registration and Iqama upload completed successfully. You can now log in.', 'success');
+        showStatus(status, 'Registration completed successfully. You can now log in with your mobile number and password.', 'success');
         form.reset();
-        var fileText = form.querySelector('.file-text strong');
-        if (fileText) fileText.textContent = 'Click to upload Iqama';
-        var preview = byId('filePreview');
-        if (preview) preview.style.display = 'none';
       }).catch(function (error) {
         setButtonState(button, false);
         showStatus(status, supabaseErrorMessage(error), 'error');
@@ -445,8 +420,9 @@
       var status = getStatusElement(form);
       setButtonState(button, true, 'Signing in...');
       getSupabaseClient().then(function (client) {
+        var loginId = byId('loginId').value.trim();
         return client.auth.signInWithPassword({
-          email: byId('loginId').value.trim(),
+          email: loginId.indexOf('@') !== -1 ? loginId : authEmailForMobile(loginId),
           password: byId('password').value
         });
       }).then(function (result) {
