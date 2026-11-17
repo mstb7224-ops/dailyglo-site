@@ -348,7 +348,7 @@
         function getDrawSchedule(year) {
             return drawMonthDays.map(function (monthDay) { return new Date(Date.UTC(year, monthDay[0], monthDay[1], 9, 0, 0)); });
         }
-        const drawResults = {
+        let drawResults = {
             '2026-11-16': { firstPrize: '645654', twoDDown: '06' }
         };
         function getNextDraw(now) {
@@ -392,7 +392,20 @@
             if (timeElement) timeElement.innerHTML = '<i class="far fa-clock"></i> 12:00 PM • SAUDI ARABIA TIME';
             updateLastResult(now);
         }
+        function loadAutomaticResults() {
+            fetch('data/draw-results.json?ts=' + Date.now(), { cache: 'no-store' })
+                .then(function (response) { if (!response.ok) throw new Error('Result data unavailable'); return response.json(); })
+                .then(function (results) {
+                    drawResults = Object.assign({}, drawResults, results);
+                    updateLastResult(new Date());
+                })
+                .catch(function () {
+                    // Keep the last verified embedded result if the scheduled sync is unavailable.
+                    updateLastResult(new Date());
+                });
+        }
         updateCountdown();
+        loadAutomaticResults();
         setInterval(updateCountdown, 1000);
 
         // MOBILE MENU

@@ -1,0 +1,37 @@
+name: Update Thailand lottery results
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: thailand-lottery-results
+  cancel-in-progress: true
+
+jobs:
+  update-results:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch latest official GLO result
+        run: python3 scripts/fetch_thailand_lottery.py
+
+      - name: Commit changed results
+        run: |
+          if git diff --quiet -- data/draw-results.json; then
+            echo "No new published draw result."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/draw-results.json
+          git commit -m "Update Thailand lottery result"
+          git push
