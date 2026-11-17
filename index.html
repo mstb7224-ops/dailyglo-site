@@ -122,6 +122,22 @@
                 </div>
                 <div class="countdown-title">Draw Countdown</div>
             </div>
+            <section class="last-draw-result" data-last-draw-result aria-live="polite">
+                <div class="result-kicker"><i class="fas fa-trophy"></i> LAST DRAW RESULT</div>
+                <h2 data-last-result-title>Thailand Lottery</h2>
+                <p class="result-date" data-last-result-date>Loading latest result...</p>
+                <div class="result-prize-row">
+                    <div class="result-prize-card">
+                        <span>1ST PRIZE</span>
+                        <strong data-last-first-prize>—</strong>
+                    </div>
+                    <div class="result-prize-card result-prize-card-small">
+                        <span>2D DOWN</span>
+                        <strong data-last-2d-down>—</strong>
+                    </div>
+                </div>
+                <p class="result-note" data-last-result-note>Latest verified draw result</p>
+            </section>
         </div>
     </section>
 
@@ -332,13 +348,34 @@
         function getDrawSchedule(year) {
             return drawMonthDays.map(function (monthDay) { return new Date(Date.UTC(year, monthDay[0], monthDay[1], 9, 0, 0)); });
         }
+        const drawResults = {
+            '2026-11-16': { firstPrize: '645654', twoDDown: '06' }
+        };
         function getNextDraw(now) {
             const year = now.getUTCFullYear();
             const schedule = getDrawSchedule(year).concat(getDrawSchedule(year + 1));
             return schedule.find(function (draw) { return draw.getTime() > now.getTime(); }) || schedule[schedule.length - 1];
         }
+        function getPreviousDraw(now) {
+            const year = now.getUTCFullYear();
+            const schedule = getDrawSchedule(year - 1).concat(getDrawSchedule(year));
+            return schedule.filter(function (draw) { return draw.getTime() <= now.getTime(); }).pop() || schedule[0];
+        }
+        function dateKey(draw) {
+            return draw.toISOString().slice(0, 10);
+        }
+        function updateLastResult(now) {
+            const previousDraw = getPreviousDraw(now);
+            const result = drawResults[dateKey(previousDraw)];
+            const dateText = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Riyadh', day: 'numeric', month: 'long', year: 'numeric' }).format(previousDraw).toUpperCase();
+            document.querySelector('[data-last-result-date]').textContent = dateText;
+            document.querySelector('[data-last-first-prize]').textContent = result ? result.firstPrize : 'PENDING';
+            document.querySelector('[data-last-2d-down]').textContent = result ? result.twoDDown : 'PENDING';
+            document.querySelector('[data-last-result-note]').textContent = result ? 'Latest verified draw result' : 'Result will appear after the draw is verified';
+        }
         function updateCountdown() {
-            const drawDate = getNextDraw(new Date());
+            const now = new Date();
+            const drawDate = getNextDraw(now);
             const diff = Math.max(0, drawDate.getTime() - Date.now());
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -353,6 +390,7 @@
             if (dateElement) dateElement.textContent = dateText;
             const timeElement = document.querySelector('[data-next-draw-time]');
             if (timeElement) timeElement.innerHTML = '<i class="far fa-clock"></i> 12:00 PM • SAUDI ARABIA TIME';
+            updateLastResult(now);
         }
         updateCountdown();
         setInterval(updateCountdown, 1000);

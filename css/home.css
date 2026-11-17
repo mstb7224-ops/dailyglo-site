@@ -377,6 +377,28 @@ nav a.active::after {
     background: linear-gradient(90deg, rgba(14,165,233,0.6), transparent);
 }
 
+/* ===== LAST DRAW RESULT ===== */
+.last-draw-result {
+    margin: 24px auto 0;
+    max-width: 620px;
+    padding: 22px 24px 20px;
+    border: 1px solid rgba(245,201,79,.45);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(40,31,8,.58), rgba(4,15,31,.9));
+    box-shadow: 0 0 28px rgba(245,201,79,.12), inset 0 0 24px rgba(245,201,79,.04);
+}
+.result-kicker { color: #f5c94f; font: 700 11px 'Orbitron', sans-serif; letter-spacing: 2px; }
+.result-kicker i { margin-right: 6px; }
+.last-draw-result h2 { margin: 8px 0 3px; color: #fff; font: 700 20px 'Orbitron', sans-serif; }
+.result-date, .result-note { color: #94a3b8; font-size: 12px; margin: 0; }
+.result-prize-row { display: flex; justify-content: center; gap: 14px; margin: 17px 0 12px; }
+.result-prize-card { min-width: 210px; padding: 13px 18px; border: 1px solid rgba(56,189,248,.35); border-radius: 11px; background: rgba(2,11,29,.75); }
+.result-prize-card-small { min-width: 130px; border-color: rgba(245,201,79,.4); }
+.result-prize-card span { display: block; color: #38bdf8; font: 600 10px 'Orbitron', sans-serif; letter-spacing: 1.5px; }
+.result-prize-card-small span { color: #f5c94f; }
+.result-prize-card strong { display: block; margin-top: 6px; color: #fff; font: 800 30px 'Orbitron', sans-serif; letter-spacing: 3px; text-shadow: 0 0 15px rgba(56,189,248,.45); }
+.result-prize-card-small strong { color: #ffe28a; font-size: 26px; }
+
 /* ===== FEATURES BAR ===== */
 .features-bar {
     display: flex;
@@ -776,5 +798,10 @@ footer {
     .feature-item, .stat-item { flex: 1 1 100%; }
     .features-bar, .stats-bar { padding: 18px 20px; }
     .countdown-container { padding: 25px 20px; }
+    .last-draw-result { padding: 18px 12px; }
+    .result-prize-row { gap: 8px; }
+    .result-prize-card { min-width: 0; flex: 1; padding: 12px 8px; }
+    .result-prize-card strong { font-size: 22px; letter-spacing: 1px; }
+    .result-prize-card-small strong { font-size: 21px; }
 }
 .hero-actions{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}.assistant-home-link{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:8px;border:1px solid rgba(56,189,248,.55);color:#7dd3fc;text-decoration:none;font-size:12px;font-weight:700;letter-spacing:.04em;transition:all .3s}.assistant-home-link:hover{border-color:#7dd3fc;background:rgba(56,189,248,.1);transform:translateY(-1px)}
