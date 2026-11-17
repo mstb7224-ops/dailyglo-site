@@ -379,7 +379,7 @@ nav a.active::after {
 
 /* ===== LAST DRAW RESULT ===== */
 .last-draw-result {
-    margin: 24px auto 0;
+    margin: 0 auto 28px;
     max-width: 620px;
     padding: 22px 24px 20px;
     border: 1px solid rgba(245,201,79,.45);
@@ -387,6 +387,7 @@ nav a.active::after {
     background: linear-gradient(145deg, rgba(40,31,8,.58), rgba(4,15,31,.9));
     box-shadow: 0 0 28px rgba(245,201,79,.12), inset 0 0 24px rgba(245,201,79,.04);
 }
+.last-draw-result::after { content: ''; display: block; height: 2px; margin: 18px auto 0; max-width: 220px; background: linear-gradient(90deg, transparent, #f5c94f, transparent); opacity: .65; }
 .result-kicker { color: #f5c94f; font: 700 11px 'Orbitron', sans-serif; letter-spacing: 2px; }
 .result-kicker i { margin-right: 6px; }
 .last-draw-result h2 { margin: 8px 0 3px; color: #fff; font: 700 20px 'Orbitron', sans-serif; }
@@ -590,7 +591,9 @@ nav a.active::after {
     gap: 12px;
     padding: 10px 0;
     border-bottom: 1px solid rgba(56,189,248,0.08);
+    transition: transform .25s ease, background .25s ease;
 }
+.winner-item:hover { transform: translateX(4px); background: rgba(14,165,233,.06); border-radius: 8px; }
 .winner-item:last-child { border-bottom: none; }
 .winner-avatar {
     width: 38px; height: 38px;
