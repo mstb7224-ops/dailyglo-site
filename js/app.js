@@ -359,13 +359,14 @@
     if (!codeInput || !applyButton || !message || !discountAmount || !finalAmount || !amountInput || !window.DailyGloDiscounts) return;
 
     function update(showMessage) {
+      if (showMessage && window.DailyGloDiscounts.startRedemption) window.DailyGloDiscounts.startRedemption(codeInput.value);
       var result = window.DailyGloDiscounts.calculate(codeInput.value);
       amountInput.value = result.finalAmount;
       discountAmount.textContent = '-' + result.discountAmount + ' SAR';
       finalAmount.textContent = result.finalAmount + ' SAR';
       if (remainingAmount && amountPaidInput) remainingAmount.textContent = Math.max(0, Number((result.finalAmount - Number(amountPaidInput.value || 0)).toFixed(2))) + ' SAR';
       if (showMessage) {
-        message.textContent = result.valid ? ((result.message || result.label + ' applied. You save ' + result.discountAmount + ' SAR.') + (result.expiresAt ? ' This offer is valid until 17 November 2026.' : '')) : (result.requestedCode === 'SPECIAL5' ? 'Thank you for your interest in SPECIAL5. This 90% offer was for the first five customers, and all five places have now been claimed. PRIME75 (75% off) is available instead.' : 'Invalid code. PRIME75 (75% off) is currently available until 17 November 2026. SPECIAL5 was limited to the first five customers and is now closed.');
+        message.textContent = result.valid ? (result.label + ' applied. You save ' + result.discountAmount + ' SAR. ' + (result.message || '')) : (result.message || 'Invalid code. The current offer is FIRST90 (90% off), limited to 10 redemptions.');
         message.className = 'discount-message ' + (result.valid ? 'success' : 'error');
       }
       return result;
@@ -522,7 +523,7 @@
           if (byId('discountAmount')) byId('discountAmount').textContent = '-0 SAR';
           if (byId('finalAmount')) byId('finalAmount').textContent = '980 SAR';
           if (discountInput) discountInput.value = '';
-          if (byId('discountMessage')) { byId('discountMessage').textContent = 'PRIME75 (75% off) is currently available until 17 November 2026. SPECIAL5 was limited to the first five customers and is now closed.'; byId('discountMessage').className = 'discount-message'; }
+          if (byId('discountMessage')) { byId('discountMessage').textContent = 'FIRST90 (90% off) is available for 10 customers. Apply the code and complete payment within 3 hours.'; byId('discountMessage').className = 'discount-message'; }
         }
       }).catch(function (error) { handleApiError(form, error); });
     });

@@ -1,6 +1,6 @@
 -- DailyGlo discount-code setup
--- Run this script in Supabase SQL Editor before relying on database-backed validation.
--- The current frontend also contains the same two promo codes for immediate display/calculation.
+-- FIRST90 is the only current promotion. Payment validity is 3 hours from browser redemption;
+-- production payment verification should also enforce this window server-side.
 
 create table if not exists public.discount_codes (
   id uuid primary key default gen_random_uuid(),
@@ -20,38 +20,24 @@ drop policy if exists "Admins can view all discount codes" on public.discount_co
 drop policy if exists "Admins can insert discount codes" on public.discount_codes;
 drop policy if exists "Admins can update discount codes" on public.discount_codes;
 create policy "Anyone can read active discount codes"
-  on public.discount_codes
-  for select
-  to anon, authenticated
-  using (
-    active = true
-    and (expires_at is null or expires_at > now())
-    and (max_uses is null or used_count < max_uses)
-  );
-
+  on public.discount_codes for select to anon, authenticated
+  using (active = true and (expires_at is null or expires_at > now()) and (max_uses is null or used_count < max_uses));
 create policy "Admins can view all discount codes"
-  on public.discount_codes
-  for select
-  to authenticated
+  on public.discount_codes for select to authenticated
   using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
-
 create policy "Admins can insert discount codes"
-  on public.discount_codes
-  for insert
-  to authenticated
+  on public.discount_codes for insert to authenticated
   with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
-
 create policy "Admins can update discount codes"
-  on public.discount_codes
-  for update
-  to authenticated
+  on public.discount_codes for update to authenticated
   using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin')
   with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
 insert into public.discount_codes (code, percent_off, active, max_uses, used_count, expires_at)
 values
   ('SPECIAL5', 90, false, 5, 5, null),
-  ('PRIME75', 75, true, null, 0, '2026-11-17 17:59:59+00')
+  ('PRIME75', 75, false, null, 0, null),
+  ('FIRST90', 90, true, 10, 0, null)
 on conflict (code) do update set
   percent_off = excluded.percent_off,
   active = excluded.active,
@@ -59,6 +45,6 @@ on conflict (code) do update set
   used_count = excluded.used_count,
   expires_at = excluded.expires_at;
 
--- Important: do not let the browser increment used_count or set payment amounts.
--- Final amount and one-time-use enforcement should be performed by a trusted
--- server-side endpoint or a SECURITY DEFINER RPC after backend payment integration.
+-- The browser starts a three-hour redemption window when FIRST90 is applied.
+-- Final payment verification and atomic used_count increments should be performed by a trusted
+-- server-side endpoint or SECURITY DEFINER RPC before production payment settlement.
